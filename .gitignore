@@ -55,6 +55,8 @@ build/
 
 # iOS related
 /ios/Pods/
+/ios/.symlinks/
+/ios/build/
 /ios/Flutter/App.framework
 /ios/Flutter/Flutter.podspec
 /ios/Flutter/.last_build_id
