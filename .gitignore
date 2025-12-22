@@ -1,0 +1,103 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Miscellaneous
+*.class
+*.as
+*.o
+*.so
+*.log
+*.pyc
+*.swp
+*~
+.DS_Store
+._*
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+devtools_options.yaml
+
+# Flutter/Dart/Pub related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+**/*.freezed.dart
+**/*.g.dart
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Android related
+/android/app/src/main/assets/flutter_assets/
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/key.properties
+/android/.gradle
+/android/local.properties
+/android/app/build/
+/android/build/
+*.jks
+
+# iOS related
+/ios/Pods/
+/ios/Flutter/App.framework
+/ios/Flutter/Flutter.podspec
+/ios/Flutter/.last_build_id
+/ios/Flutter/flutter_export_environment.sh
+/ios/Runner/Assets.xcassets/AppIcon.appiconset/
+/ios/Runner/GeneratedPluginRegistrant.h
+/ios/Runner/GeneratedPluginRegistrant.m
+/ios/Runner/GeneratedPluginRegistrant-Bridging-Header.h
+/ios/Runner/Info.plist
+/ios/Runner/GoogleService-Info.plist
+/ios/Runner.xcworkspace/
+/ios/Runner.xcodeproj/project.xcworkspace/
+/ios/Runner.xcodeproj/xcuserdata/
+/ios/Podfile.lock
+
+# macOS related
+/macos/Flutter/GeneratedPluginRegistrant.swift
+/macos/Runner/Assets.xcassets/AppIcon.appiconset/
+/macos/Runner/Configs/AppInfo.xcconfig
+/macos/Runner/Configs/Debug.xcconfig
+/macos/Runner/Configs/Release.xcconfig
+/macos/Runner/Configs/Warnings.xcconfig
+/macos/Runner.xcodeproj/project.xcworkspace/
+/macos/Runner.xcodeproj/xcuserdata/
+
+# Windows related
+/windows/flutter/generated_plugin_registrant.cc
+/windows/flutter/generated_plugin_registrant.h
+/windows/runner/Debug/
+/windows/runner/Profile/
+/windows/runner/Release/
+
+# Linux related
+/linux/flutter/generated_plugin_registrant.cc
+/linux/flutter/generated_plugin_registrant.h
+/linux/CMakeLists.txt.user
+/linux/build/
+
+# Node related
+node_modules/
+
+# User-specific files
+/paystoreKey/
+
+# Secret files
+firebase.json
