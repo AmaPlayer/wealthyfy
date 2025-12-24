@@ -22,7 +22,7 @@ import '../Models/usermeeting_details_model.dart';
 import '../Models/yesterday_user_attendance_model.dart';
 
 // -------------------Base URL and endpoints ------------------------------
-String BaseUrl = 'https://iifl-admin-api.onrender.com/';
+String BaseUrl = 'http://13.204.10.62:8112/';
 // ------------------- URL and endpoints ------------------------------
 String loginUrl = "${BaseUrl}user_data/user_login_api";
 String profileUrl = "${BaseUrl}user_data/My_profile_APi";
