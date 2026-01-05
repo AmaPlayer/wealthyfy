@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
-
 import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
