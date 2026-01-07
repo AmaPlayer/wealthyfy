@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "277253889002",
+    "project_id": "wealthyfy-940a0",
+    "storage_bucket": "wealthyfy-940a0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:277253889002:android:b29fcf9c13d8ac2fab7093",
+        "android_client_info": {
+          "package_name": "com.lgt.wealthyfy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnbxJNYJONLqFDhIipOw5_vaY5Y7ho5aI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
