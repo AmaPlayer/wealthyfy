@@ -55,7 +55,7 @@ class _ProfileTabState extends State<ProfileTab> {
                 ),
               )
             : SingleChildScrollView(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 child: dController.profileData.value.isEmpty
                     ? const DataNotFound(
                         color: Colors.black,
@@ -305,7 +305,7 @@ class _ProfileTabState extends State<ProfileTab> {
           borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
         ),
         width: double.infinity,
-        height: 800,
+        constraints: const BoxConstraints(minHeight: 800),
         child: Padding(
           padding: const EdgeInsets.only(top: 50),
           child: Column(
@@ -324,10 +324,232 @@ class _ProfileTabState extends State<ProfileTab> {
               addPadding(15, 0),
               _myProFile(),
               _logout(),
+              _supportFaq(),
             ],
           ),
         ),
       );
+
+  _supportFaq() => Container(
+      margin: const EdgeInsets.only(top: 15, right: 6, left: 6, bottom: 10),
+      padding: const EdgeInsets.all(12),
+      width: double.infinity,
+      decoration: BoxDecoration(
+          color: ColorConstants.WHITECOLOR,
+          boxShadow: const [BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)],
+          borderRadius: BorderRadius.circular(10)),
+      child: Obx(() {
+        final faqData = dController.faqData.value;
+        final isLoading = dController.isFaqLoading.value;
+        final supportEmail = faqData?.supportEmail ?? '';
+        final supportPhone = faqData?.supportPhone ?? '';
+        final faqs = faqData?.faqs ?? const [];
+        final announcementData = dController.announcementData.value;
+        final isAnnouncementLoading = dController.isAnnouncementLoading.value;
+        final announcements =
+            announcementData?.announcements ?? const [];
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                    padding: EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                        color: ColorConstants.WHITECOLOR,
+                        boxShadow: const [BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)],
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Icon(
+                      Icons.support_agent_outlined,
+                      color: Colors.grey.shade700,
+                    )),
+                addPadding(0, 10),
+                headingText(
+                    title: 'Support & FAQ',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: ColorConstants.GREY7COLOR),
+              ],
+            ),
+            addPadding(6, 0),
+            ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              childrenPadding: EdgeInsets.zero,
+              title: Text(
+                'Support',
+                style: TextStyle(
+                  color: ColorConstants.DarkMahroon,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+              ),
+              children: [
+                if (isLoading && faqData == null)
+                  _supportStatus('Loading support details...')
+                else ...[
+                  _supportRow('Email', supportEmail),
+                  _supportRow('Phone', supportPhone),
+                  if (supportEmail.isEmpty && supportPhone.isEmpty)
+                    _supportStatus('Support details not available.'),
+                ],
+              ],
+            ),
+            ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              childrenPadding: EdgeInsets.zero,
+              title: Text(
+                'FAQs',
+                style: TextStyle(
+                  color: ColorConstants.DarkMahroon,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+              ),
+              children: [
+                if (isLoading && faqs.isEmpty)
+                  _supportStatus('Loading FAQs...')
+                else if (faqs.isEmpty)
+                  _supportStatus('No FAQs available.')
+                else
+                  Column(
+                    children: [
+                      for (int i = 0; i < faqs.length; i++)
+                        ExpansionTile(
+                          key: PageStorageKey('faq_$i'),
+                          tilePadding: EdgeInsets.zero,
+                          childrenPadding: const EdgeInsets.only(bottom: 6),
+                          title: Text(
+                            faqs[i].heading.isEmpty
+                                ? 'FAQ ${i + 1}'
+                                : faqs[i].heading,
+                            style: TextStyle(
+                              color: ColorConstants.GREY7COLOR,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12.5,
+                            ),
+                          ),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 6),
+                              child: Text(
+                                faqs[i].body.isEmpty
+                                    ? 'Details will be updated soon.'
+                                    : faqs[i].body,
+                                style: TextStyle(
+                                  color: ColorConstants.GREY7COLOR,
+                                  fontSize: 12.5,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+              ],
+            ),
+            ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              childrenPadding: EdgeInsets.zero,
+              title: Text(
+                'Announcements',
+                style: TextStyle(
+                  color: ColorConstants.DarkMahroon,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+              ),
+              children: [
+                if (isAnnouncementLoading && announcements.isEmpty)
+                  _supportStatus('Loading announcements...')
+                else if (announcements.isEmpty)
+                  _supportStatus('No announcements available.')
+                else
+                  Column(
+                    children: [
+                      for (int i = 0; i < announcements.length; i++)
+                        ExpansionTile(
+                          key: PageStorageKey('announcement_$i'),
+                          tilePadding: EdgeInsets.zero,
+                          childrenPadding: const EdgeInsets.only(bottom: 6),
+                          title: Text(
+                            announcements[i].heading.isEmpty
+                                ? 'Announcement ${i + 1}'
+                                : announcements[i].heading,
+                            style: TextStyle(
+                              color: ColorConstants.GREY7COLOR,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12.5,
+                            ),
+                          ),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 6),
+                              child: Text(
+                                _stripHtml(announcements[i].html).isEmpty
+                                    ? 'Details will be updated soon.'
+                                    : _stripHtml(announcements[i].html),
+                                style: TextStyle(
+                                  color: ColorConstants.GREY7COLOR,
+                                  fontSize: 12.5,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+              ],
+            ),
+          ],
+        );
+      }));
+
+  Widget _supportRow(String label, String value) {
+    final textValue = value.trim().isEmpty ? 'Not available' : value.trim();
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label:',
+            style: TextStyle(
+              color: ColorConstants.GREY7COLOR,
+              fontWeight: FontWeight.w600,
+              fontSize: 12.5,
+            ),
+          ),
+          addPadding(0, 6),
+          Expanded(
+            child: Text(
+              textValue,
+              style: TextStyle(
+                color: ColorConstants.GREY7COLOR,
+                fontSize: 12.5,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _supportStatus(String message) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 6),
+      child: Text(
+        message,
+        style: TextStyle(
+          color: ColorConstants.GREY6COLOR,
+          fontSize: 12.5,
+        ),
+      ),
+    );
+  }
+
+  String _stripHtml(String input) {
+    return input.replaceAll(RegExp(r'<[^>]*>'), '').trim();
+  }
 
   Future<void> _pickImageFromGallery() async {
     final ImagePicker picker = ImagePicker();

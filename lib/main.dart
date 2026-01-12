@@ -1,10 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart'; // Location package
+import 'package:workmanager/workmanager.dart'; // Add this import
+import 'package:meeting/background_task.dart'; // Add this import
 import 'APIs/user_data.dart';
 import 'Routes/AppPages.dart';
 import 'Routes/AppRoutes.dart';
@@ -19,17 +22,42 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    String? token = await FirebaseMessaging.instance.getAPNSToken();
-    print("APNs Token: $token");
-  } else {
-    print('User declined or has not accepted notification permissions.');
+  if (kIsWeb) {
+    runApp(const MyApp());
+    return;
+  }
+
+  if (!kIsWeb) {
+    // Initialize Workmanager (not supported on web)
+    Workmanager().initialize(
+      callbackDispatcher,
+      isInDebugMode: true, // Set to false in production
+    );
+  }
+
+  if (!kIsWeb) {
+    try {
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+      NotificationSettings settings = await messaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        final bool isApplePlatform =
+            defaultTargetPlatform == TargetPlatform.iOS ||
+                defaultTargetPlatform == TargetPlatform.macOS;
+        if (isApplePlatform) {
+          String? token = await FirebaseMessaging.instance.getAPNSToken();
+          print("APNs Token: $token");
+        }
+      } else {
+        print('User declined or has not accepted notification permissions.');
+      }
+    } catch (e) {
+      // Avoid startup crash on unsupported platforms.
+      print('Firebase Messaging init skipped: $e');
+    }
   }
   // Enables full screen layout
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
@@ -54,6 +82,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   void onInit() {
+    if (kIsWeb) {
+      return;
+    }
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print("Message received in foreground: ${message.notification?.title}");
     });
@@ -173,6 +204,10 @@ class WelcomeStateController extends GetxController {
 
   Future<void> _requestPermission() async {
     LocationPermission permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.whileInUse) {
+      // Try to upgrade to "always" for background tasks.
+      permission = await Geolocator.requestPermission();
+    }
     if (permission == LocationPermission.denied) {
       _showPermissionDeniedDialog();
     } else if (permission == LocationPermission.deniedForever) {

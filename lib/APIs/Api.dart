@@ -14,6 +14,8 @@ import '../Models/TeamAttendaceModelList.dart';
 import '../Models/dashboard_approvedmeeting_model.dart';
 import '../Models/login_model.dart';
 import 'dart:convert';
+import '../Models/announcement_model.dart';
+import '../Models/faq_model.dart';
 import '../Models/profile_model.dart';
 import '../Models/teamDesignationListModel.dart';
 import '../Models/userleave_apply_details.dart';
@@ -44,9 +46,12 @@ String yesterdayUserAttendanceUrl  = "${BaseUrl}attendance/yesterday_user_attend
 String dashboardApprovedMeetingUrl = "${BaseUrl}meeting_data/user_dashboard_approved_meeting_api";
 String notificationUrl = "${BaseUrl}notification_data/notification_list_API";
 String meetingCheckInUrl = "${BaseUrl}meeting_data/meeting_check_in_api";
+String meetingPermissionCheckUrl = "${BaseUrl}permission-check";
 String meetingFakeCheckUrl = "${BaseUrl}meeting_data/fake_meeting_api";
 String leaveApproveRejectUlr = "${BaseUrl}attendance/leave_reject_approved_API";
 String teamAttendanceUlr = "${BaseUrl}attendance/my_team_full_attendance_list_API";
+String faqUrl = "${BaseUrl}faqapi";
+String announcementUrl = "${BaseUrl}announcementapi";
 
 //----------------------------------------------------------------------------
 
@@ -226,6 +231,37 @@ Future<APIResponse> updateProfileImgApi(String userImg) async {
   }
 }
 
+Future<APIResponse> faqApi() async {
+  try {
+    final response = await http.get(Uri.parse(faqUrl));
+    final raw = jsonDecode(response.body);
+    if (raw[status]) {
+      FaqModel model = FaqModel.fromApi(Map<String, dynamic>.from(raw));
+      return APIResponse(message: raw[message], status: true, data: model);
+    } else {
+      return APIResponse(message: raw[message], status: false);
+    }
+  } catch (error) {
+    return APIResponse(message: error.toString(), status: false);
+  }
+}
+
+Future<APIResponse> announcementApi() async {
+  try {
+    final response = await http.get(Uri.parse(announcementUrl));
+    final raw = jsonDecode(response.body);
+    if (raw[status]) {
+      AnnouncementModel model =
+          AnnouncementModel.fromApi(Map<String, dynamic>.from(raw));
+      return APIResponse(message: raw[message], status: true, data: model);
+    } else {
+      return APIResponse(message: raw[message], status: false);
+    }
+  } catch (error) {
+    return APIResponse(message: error.toString(), status: false);
+  }
+}
+
 Future<APIResponse> createMeetingListApi( Map<String, dynamic> hashmap)async{
   try {
     final response = await http.post(Uri.parse(userMeetingListUrl),body: hashmap);
@@ -385,21 +421,43 @@ Future<APIResponse> meetingCheckInApi (Map<String,dynamic>hashmap)async{
   }
 }
 
-Future<APIResponse> meetingFakeCheckApi(Map<String, dynamic> hashmap) async {
+Future<APIResponse> meetingPermissionCheckApi(Map<String, dynamic> hashMap) async {
   try {
-    final response = await http.post(Uri.parse(meetingFakeCheckUrl), body: hashmap);
-    var data = jsonDecode(response.body);
-    print('CHECK_FAKE_MEETING_DATA$data');
-    if (data["status"]) {
-      return APIResponse(message: data["message"], status: true);
-    } else {
-      return APIResponse(message: data["message"], status: false);
-    }
+    final response =
+        await http.post(Uri.parse(meetingPermissionCheckUrl), body: hashMap);
+    final data = jsonDecode(response.body);
+    return APIResponse(
+      message: data["message"] ?? "",
+      status: data["status"] == true,
+    );
   } catch (error) {
-    print(("CHECK_FAKE_MEETING"));
     return APIResponse(message: error.toString(), status: false);
   }
 }
+
+Future<APIResponse> meetingFakeCheckApi(Map<String, dynamic> payload) async {
+  try {
+    final response = await http.post(
+      Uri.parse(meetingFakeCheckUrl),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(payload),
+    );
+
+    print("FAKE_MEETING statusCode: ${response.statusCode}");
+    print("FAKE_MEETING raw: ${response.body}");
+
+    final data = jsonDecode(response.body);
+
+    return APIResponse(
+      message: data["message"]?.toString() ?? "No message",
+      status: data["status"] == true,
+    );
+  } catch (error) {
+    print("CHECK_FAKE_MEETING error: $error");
+    return APIResponse(message: error.toString(), status: false);
+  }
+}
+
 
 Future <APIResponse> leaveApproveRejectApi (Map<String,dynamic>hashmap)async{
   try{

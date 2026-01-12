@@ -1,85 +1,172 @@
+import 'dart:convert';
+import 'package:flutter/widgets.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:meeting/APIs/Api.dart';
-import 'package:meeting/APIs/user_data.dart'; // Assuming viewLoginDetail is from here
-import 'package:get/get.dart'; // Assuming GetX is used for navigation or context if needed
 import 'package:geocoding/geocoding.dart';
+import 'package:meeting/APIs/Api.dart';
+
+// ✅ Cleaner + safer refactor
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    print("Native called background task: $task");
+    WidgetsFlutterBinding.ensureInitialized(); // ✅ important for background isolate
+
+    _log("BG task started: $task");
+    _log("BG inputData: $inputData");
 
     try {
-      // Initialize position immediately after try block
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-      String currentLat = position.latitude.toString();
-      String currentLng = position.longitude.toString();
-      String currentFullAddress = "Unknown Address";
+      final payload = await _buildCheckpointPayload(inputData);
+      if (payload == null) return Future.value(false);
 
-      final String? meetingId = inputData?['meeting_id'];
-      final String? userId = inputData?['tbl_user_id'];
-      final String? initialCheckInTimestampStr = inputData?['initial_check_in_timestamp'];
+      _log("Sending checkpoint payload: ${jsonEncode(payload)}");
 
-      if (meetingId == null || userId == null || initialCheckInTimestampStr == null) {
-        print("Error: Missing meeting_id, tbl_user_id, or initial_check_in_timestamp in background task inputData.");
-        return Future.value(false);
-      }
+      final APIResponse apiRes = await meetingFakeCheckApi(payload);
 
-      final initialCheckInTime = DateTime.fromMillisecondsSinceEpoch(int.parse(initialCheckInTimestampStr));
-      final currentTime = DateTime.now();
-      final difference = currentTime.difference(initialCheckInTime);
-      final elapsedMinutes = difference.inMinutes;
-
-      int? checkpointNumber;
-
-      if (elapsedMinutes >= 4 && elapsedMinutes < 7) { // Roughly 5 minutes
-        checkpointNumber = 1;
-      } else if (elapsedMinutes >= 9 && elapsedMinutes < 12) { // Roughly 10 minutes
-        checkpointNumber = 2;
-      }
-
-      if (checkpointNumber == null) {
-        print("Error: Not within 5 or 10 minute checkpoint window. Elapsed minutes: $elapsedMinutes");
-        return Future.value(false); // Do not send if not in a checkpoint window
-      }
-
-      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-      if (placemarks.isNotEmpty) {
-        Placemark place = placemarks[0];
-        currentFullAddress =
-            "${place.name ?? ''}, "
-            "${place.street ?? ''}, "
-            "${place.subLocality ?? ''}, "
-            "${place.locality ?? ''}, "
-            "${place.subAdministrativeArea ?? ''}, "
-            "${place.administrativeArea ?? ''}, "
-            "${place.postalCode ?? ''}, "
-            "${place.country ?? ''}";
-        currentFullAddress = currentFullAddress.trim().replaceAll(RegExp(r'\s+,'), '');
-      }
-
-      var hashMap = {
-        "tbl_user_id": userId,
-        "tbl_meeting_id": meetingId,
-        "checkpoint_number": checkpointNumber.toString(), // Send as string if backend expects dynamic type
-        "latitude": currentLat,
-        "longitude": currentLng,
-        "full_address": currentFullAddress,
-      };
-
-      print("Sending checkpoint data from background (Checkpoint $checkpointNumber): $hashMap");
-      APIResponse onValue = await meetingFakeCheckApi(hashMap);
-
-      if (onValue.status) {
-        print("Background fake check-in successful for meeting ID: $meetingId");
+      if (apiRes.status) {
+        _log("✅ Fake checkpoint stored successfully. msg=${apiRes.message}");
         return Future.value(true);
       } else {
-        print("Background fake check-in failed for meeting ID: $meetingId: ${onValue.message}");
+        _log("❌ Fake checkpoint failed. msg=${apiRes.message}");
         return Future.value(false);
       }
-    } catch (e) {
-      print("Error during background task execution: $e");
+    } catch (e, st) {
+      _log("❌ BG task exception: $e");
+      _log("Stack: $st");
       return Future.value(false);
     }
   });
 }
+
+/// Returns payload Map to send to API, or null if we should not send anything.
+Future<Map<String, dynamic>?> _buildCheckpointPayload(Map<String, dynamic>? inputData) async {
+  if (inputData == null) {
+    _log("❌ inputData is null");
+    return null;
+  }
+
+  final String? meetingId = inputData['meeting_id']?.toString();
+  final String? userId = inputData['tbl_user_id']?.toString();
+  final String? tsStr = inputData['initial_check_in_timestamp']?.toString();
+  final String? checkpointStr = inputData['checkpoint_number']?.toString();
+
+  if (meetingId == null || meetingId.isEmpty || userId == null || userId.isEmpty) {
+    _log("??O Missing meeting_id / tbl_user_id");
+    return null;
+  }
+
+  int? elapsedMinutes;
+  if (tsStr != null && tsStr.isNotEmpty) {
+    final int? ts = int.tryParse(tsStr);
+    if (ts != null) {
+      elapsedMinutes = DateTime.now()
+          .difference(DateTime.fromMillisecondsSinceEpoch(ts))
+          .inMinutes;
+    } else {
+      _log("??O initial_check_in_timestamp is not a valid int: $tsStr");
+    }
+  }
+
+  final int? intendedCheckpoint = int.tryParse(checkpointStr ?? "");
+  int? checkpointNumber;
+  if (intendedCheckpoint == 1 || intendedCheckpoint == 2) {
+    checkpointNumber = intendedCheckpoint;
+    if (elapsedMinutes != null) {
+      _log("Using intended checkpoint=$checkpointNumber, elapsedMinutes=$elapsedMinutes");
+    } else {
+      _log("Using intended checkpoint=$checkpointNumber");
+    }
+  } else if (elapsedMinutes != null) {
+    checkpointNumber = _resolveCheckpoint(elapsedMinutes);
+  } else {
+    _log("??O Missing checkpoint_number and initial_check_in_timestamp");
+    return null;
+  }
+
+  if (checkpointNumber == null) {
+    _log("⏭️ Not in checkpoint window. elapsedMinutes=$elapsedMinutes");
+    return null;
+  }
+
+  final Position? position = await _getPositionSafe();
+  if (position == null) return null;
+
+  final String lat = position.latitude.toString();
+  final String lng = position.longitude.toString();
+  final String address = await _getAddressSafe(position) ?? "Unknown Address";
+
+  return {
+    "tbl_user_id": userId,
+    "tbl_meeting_id": meetingId,
+    "checkpoint_number": checkpointNumber.toString(),
+    "latitude": lat,
+    "longitude": lng,
+    "full_address": address,
+  };
+}
+
+/// Your original strict windows:
+///  - checkpoint 1: minutes 4..6
+///  - checkpoint 2: minutes 9..11
+int? _resolveCheckpoint(int elapsedMinutes) {
+  if (elapsedMinutes >= 4 && elapsedMinutes < 9) return 1;
+  if (elapsedMinutes >= 9 && elapsedMinutes < 21) return 2;
+  return null;
+}
+
+Future<Position?> _getPositionSafe() async {
+  try {
+    // In background, permissions can fail; log clearly.
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      _log("❌ Location service disabled");
+      return null;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      _log("❌ Location permission denied (or deniedForever): $permission");
+      return null;
+    }
+
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  } catch (e) {
+    _log("❌ Geolocator error: $e");
+    return null;
+  }
+}
+
+Future<String?> _getAddressSafe(Position position) async {
+  try {
+    final placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    if (placemarks.isEmpty) return null;
+
+    final p = placemarks.first;
+
+    // Build a clean address without lots of ", ,"
+    final parts = <String?>[
+      p.name,
+      p.street,
+      p.subLocality,
+      p.locality,
+      p.subAdministrativeArea,
+      p.administrativeArea,
+      p.postalCode,
+      p.country,
+    ].where((e) => e != null && e!.trim().isNotEmpty).map((e) => e!.trim()).toList();
+
+    return parts.join(", ");
+  } catch (e) {
+    _log("⚠️ Geocoding error: $e");
+    return null;
+  }
+}
+
+void _log(String msg) {
+  // One place for logs (easy to disable later)
+  // ignore: avoid_print
+  print("[FAKE_CHECK_BG] $msg");
+}
+

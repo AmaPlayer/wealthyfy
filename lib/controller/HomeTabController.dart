@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
@@ -254,33 +255,52 @@ class HomeTabController extends GetxController {
         upCheckButtonMap[tblMeetingId] =
         !(upCheckButtonMap[tblMeetingId] ?? false);
 
+        try {
+          final permission = await Geolocator.checkPermission();
+          final permissionValue =
+              permission == LocationPermission.always ? "always" : "while_in_use";
+          await meetingPermissionCheckApi({
+            "tbl_user_id": viewLoginDetail!.data.first.tblUserId.toString(),
+            "tbl_meeting_id": tblMeetingId.toString(),
+            "permission": permissionValue,
+          });
+        } catch (error) {
+          print("permission_check_api failed: $error");
+        }
+
         // Schedule background tasks for fake check-ins
         final userId = viewLoginDetail!.data.first.tblUserId.toString();
         final officeId = viewLoginDetail!.data.first.tblOfficeId.toString();
 
-        Workmanager().registerOneOffTask(
-          "meetingFakeCheckTask_5min_$tblMeetingId",
-          "meetingFakeCheck",
-          initialDelay: const Duration(minutes: 5),
-          inputData: {
-            "meeting_id": tblMeetingId,
-            "tbl_user_id": userId,
-            "tbl_office_id": officeId,
-            "initial_check_in_timestamp": DateTime.now().millisecondsSinceEpoch.toString(),
-          },
-        );
+        if (!kIsWeb) {
+          Workmanager().registerOneOffTask(
+            "meetingFakeCheckTask_5min_$tblMeetingId",
+            "meetingFakeCheck",
+            initialDelay: const Duration(minutes: 5),
+            inputData: {
+              "meeting_id": tblMeetingId,
+              "tbl_user_id": userId,
+              "tbl_office_id": officeId,
+              "checkpoint_number": "1",
+              "initial_check_in_timestamp":
+                  DateTime.now().millisecondsSinceEpoch.toString(),
+            },
+          );
 
-        Workmanager().registerOneOffTask(
-          "meetingFakeCheckTask_10min_$tblMeetingId",
-          "meetingFakeCheck",
-          initialDelay: const Duration(minutes: 10),
-          inputData: {
-            "meeting_id": tblMeetingId,
-            "tbl_user_id": userId,
-            "tbl_office_id": officeId,
-            "initial_check_in_timestamp": DateTime.now().millisecondsSinceEpoch.toString(),
-          },
-        );
+          Workmanager().registerOneOffTask(
+            "meetingFakeCheckTask_10min_$tblMeetingId",
+            "meetingFakeCheck",
+            initialDelay: const Duration(minutes: 10),
+            inputData: {
+              "meeting_id": tblMeetingId,
+              "tbl_user_id": userId,
+              "tbl_office_id": officeId,
+              "checkpoint_number": "2",
+              "initial_check_in_timestamp":
+                  DateTime.now().millisecondsSinceEpoch.toString(),
+            },
+          );
+        }
       } else {
         showErrorBottomSheet(onValue.message.toString());
       //   Fluttertoast.showToast(
