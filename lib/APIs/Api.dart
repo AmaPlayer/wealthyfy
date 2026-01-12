@@ -44,6 +44,7 @@ String yesterdayUserAttendanceUrl  = "${BaseUrl}attendance/yesterday_user_attend
 String dashboardApprovedMeetingUrl = "${BaseUrl}meeting_data/user_dashboard_approved_meeting_api";
 String notificationUrl = "${BaseUrl}notification_data/notification_list_API";
 String meetingCheckInUrl = "${BaseUrl}meeting_data/meeting_check_in_api";
+String meetingFakeCheckUrl = "${BaseUrl}meeting_data/fake_meeting_api";
 String leaveApproveRejectUlr = "${BaseUrl}attendance/leave_reject_approved_API";
 String teamAttendanceUlr = "${BaseUrl}attendance/my_team_full_attendance_list_API";
 
@@ -380,6 +381,22 @@ Future<APIResponse> meetingCheckInApi (Map<String,dynamic>hashmap)async{
     }
   }catch(error){
     print(("CHECK_IN_MEETING"));
+    return APIResponse(message: error.toString(), status: false);
+  }
+}
+
+Future<APIResponse> meetingFakeCheckApi(Map<String, dynamic> hashmap) async {
+  try {
+    final response = await http.post(Uri.parse(meetingFakeCheckUrl), body: hashmap);
+    var data = jsonDecode(response.body);
+    print('CHECK_FAKE_MEETING_DATA$data');
+    if (data["status"]) {
+      return APIResponse(message: data["message"], status: true);
+    } else {
+      return APIResponse(message: data["message"], status: false);
+    }
+  } catch (error) {
+    print(("CHECK_FAKE_MEETING"));
     return APIResponse(message: error.toString(), status: false);
   }
 }

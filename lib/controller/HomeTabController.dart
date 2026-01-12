@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:meeting/APIs/Api.dart';
 import 'package:new_version_plus/new_version_plus.dart';
+import 'package:workmanager/workmanager.dart'; // Added for background tasks
 import '../../APIs/user_data.dart';
 import '../../Models/dashboard_approvedmeeting_model.dart';
 import '../../Models/yesterday_user_attendance_model.dart';
@@ -252,8 +253,36 @@ class HomeTabController extends GetxController {
         showSuccessBottomSheet(onValue.message.toString());
         upCheckButtonMap[tblMeetingId] =
         !(upCheckButtonMap[tblMeetingId] ?? false);
+
+        // Schedule background tasks for fake check-ins
+        final userId = viewLoginDetail!.data.first.tblUserId.toString();
+        final officeId = viewLoginDetail!.data.first.tblOfficeId.toString();
+
+        Workmanager().registerOneOffTask(
+          "meetingFakeCheckTask_5min_$tblMeetingId",
+          "meetingFakeCheck",
+          initialDelay: const Duration(minutes: 5),
+          inputData: {
+            "meeting_id": tblMeetingId,
+            "tbl_user_id": userId,
+            "tbl_office_id": officeId,
+            "initial_check_in_timestamp": DateTime.now().millisecondsSinceEpoch.toString(),
+          },
+        );
+
+        Workmanager().registerOneOffTask(
+          "meetingFakeCheckTask_10min_$tblMeetingId",
+          "meetingFakeCheck",
+          initialDelay: const Duration(minutes: 10),
+          inputData: {
+            "meeting_id": tblMeetingId,
+            "tbl_user_id": userId,
+            "tbl_office_id": officeId,
+            "initial_check_in_timestamp": DateTime.now().millisecondsSinceEpoch.toString(),
+          },
+        );
       } else {
-      //  showErrorBottomSheet(onValue.message.toString());
+        showErrorBottomSheet(onValue.message.toString());
       //   Fluttertoast.showToast(
       //       msg: onValue.message.toString(), toastLength: Toast.LENGTH_LONG,backgroundColor: Colors.red);
       //   print(onValue.message);
