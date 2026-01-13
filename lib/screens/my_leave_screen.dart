@@ -18,9 +18,9 @@ import '../lists/filter_model.dart';
 import 'apply_leave.dart';
 
 class LeaveScreen extends StatefulWidget {
-  String userID;
-  String pageFrom;
-  String meetingOwner;
+  final String userID;
+  final String pageFrom;
+  final String meetingOwner;
    LeaveScreen({super.key,this.userID = "", this.pageFrom = "", this.meetingOwner = ""});
   @override
   State<LeaveScreen> createState() => _LeaveScreenState();
@@ -438,15 +438,15 @@ class _LeaveScreenState extends State<LeaveScreen> {
       // 3. Add meeting data to the Excel sheet
       for (var leave in userLeaveApplyList) {
         sheetObject.appendRow([
-          leave.tblOfficeId ?? 'N/A',
-          leave.fullName ?? 'N/A',
-          leave.leaveType ?? 'N/A',
-          leave.fromDate ?? 'N/A',
-          leave.toDate ?? 'N/A',
-          leave.leaveApplyDate ?? 'N/A',
-          leave.leaveApplyTime ?? 'N/A',
-          leave.status ?? 'N/A',
-          leave.reason ?? 'N/A',
+          leave.tblOfficeId,
+          leave.fullName,
+          leave.leaveType,
+          leave.fromDate,
+          leave.toDate,
+          leave.leaveApplyDate,
+          leave.leaveApplyTime,
+          leave.status,
+          leave.reason,
         ]);
       }
 

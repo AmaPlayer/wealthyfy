@@ -91,15 +91,15 @@ class _TeamLeaveState extends State<TeamLeave> {
       // 3. Add meeting data to the Excel sheet
       for (var leave in userLeaveApplyList) {
         sheetObject.appendRow([
-          leave.tblOfficeId ?? 'N/A',
-          leave.fullName ?? 'N/A',
-          leave.leaveType ?? 'N/A',
-          leave.fromDate ?? 'N/A',
-          leave.toDate ?? 'N/A',
-          leave.leaveApplyDate ?? 'N/A',
-          leave.leaveApplyTime ?? 'N/A',
-          leave.status ?? 'N/A',
-          leave.reason ?? 'N/A',
+          leave.tblOfficeId,
+          leave.fullName,
+          leave.leaveType,
+          leave.fromDate,
+          leave.toDate,
+          leave.leaveApplyDate,
+          leave.leaveApplyTime,
+          leave.status,
+          leave.reason,
         ]);
       }
 

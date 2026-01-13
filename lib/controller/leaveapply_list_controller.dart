@@ -14,8 +14,6 @@ class ApplyListStatus extends StatefulWidget {
 }
 
 class _ApplyListStatusState extends State<ApplyListStatus> {
-  final List<bool> _isSelected = List.generate(10, (index) => false);
-
   int? selectedIndex;
   @override
   Widget build(BuildContext context) {

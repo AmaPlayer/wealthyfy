@@ -17,9 +17,9 @@ import '../helper/textview.dart';
 import '../lists/filter_model.dart';
 
 class meetingListView extends StatefulWidget {
-  String userID;
-  String pageFrom;
-  String meetingOwner;
+  final String userID;
+  final String pageFrom;
+  final String meetingOwner;
 
   meetingListView({super.key, this.userID = "", this.pageFrom = "", this.meetingOwner = ""});
 
@@ -101,43 +101,43 @@ class _meetingListViewState extends State<meetingListView> {
 // Add data rows
       for (var meeting in meetingList) {
         sheetObject.appendRow([
-          meeting.tblMeetingId ?? 'N/A',
-          meeting.tblUserId ?? 'N/A',
-          meeting.empId ?? 'N/A',
-          meeting.fullName ?? 'N/A',
-          meeting.designationAbbr ?? 'N/A',
-          meeting.tblOfficeId ?? 'N/A',
-          meeting.clientId ?? 'N/A',
-          meeting.clientName ?? 'N/A',
-          meeting.clientEmail ?? 'N/A',
-          meeting.clientMobile ?? 'N/A',
-          meeting.city ?? 'N/A',
-          meeting.state ?? 'N/A',
-          meeting.country ?? 'N/A',
-          meeting.fullAddress ?? 'N/A',
-          meeting.familyDetails ?? 'N/A',
-          meeting.stockPortfolioWithUs ?? 'N/A',
-          meeting.stockPortfolioWithOtherBroker ?? 'N/A',
-          meeting.mutualFundPortfolio ?? 'N/A',
-          meeting.fixedDeposite ?? 'N/A',
-          meeting.loanDetails ?? 'N/A',
-          meeting.insurance ?? 'N/A',
-          meeting.pms ?? 'N/A',
-          meeting.ncd ?? 'N/A',
-          meeting.reference1 ?? 'N/A',
-          meeting.reference2 ?? 'N/A',
-          meeting.remark ?? 'N/A',
-          meeting.meetingStatus ?? 'N/A',
-          meeting.approvedRejectByUserName ?? 'N/A',
-          meeting.approvedRejectByUserType ?? 'N/A',
-          meeting.approvedRejectByUserDate ?? 'N/A',
-          meeting.meetingCheckInDateTime ?? 'N/A',
-          meeting.meetingCheckInFullAddress ?? 'N/A',
-          meeting.meetingTimeSlotFrom ?? 'N/A',
-          meeting.meetingTimeSlotTo ?? 'N/A',
-          meeting.meetingDate ?? 'N/A',
-          meeting.meetingTime ?? 'N/A',
-          meeting.meetingCheckInStatus ?? 'N/A',
+          meeting.tblMeetingId,
+          meeting.tblUserId,
+          meeting.empId,
+          meeting.fullName,
+          meeting.designationAbbr,
+          meeting.tblOfficeId,
+          meeting.clientId,
+          meeting.clientName,
+          meeting.clientEmail,
+          meeting.clientMobile,
+          meeting.city,
+          meeting.state,
+          meeting.country,
+          meeting.fullAddress,
+          meeting.familyDetails,
+          meeting.stockPortfolioWithUs,
+          meeting.stockPortfolioWithOtherBroker,
+          meeting.mutualFundPortfolio,
+          meeting.fixedDeposite,
+          meeting.loanDetails,
+          meeting.insurance,
+          meeting.pms,
+          meeting.ncd,
+          meeting.reference1,
+          meeting.reference2,
+          meeting.remark,
+          meeting.meetingStatus,
+          meeting.approvedRejectByUserName,
+          meeting.approvedRejectByUserType,
+          meeting.approvedRejectByUserDate,
+          meeting.meetingCheckInDateTime,
+          meeting.meetingCheckInFullAddress,
+          meeting.meetingTimeSlotFrom,
+          meeting.meetingTimeSlotTo,
+          meeting.meetingDate,
+          meeting.meetingTime,
+          meeting.meetingCheckInStatus,
         ]);
       }
 

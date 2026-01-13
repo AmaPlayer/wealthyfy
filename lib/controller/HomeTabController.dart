@@ -216,7 +216,11 @@ class HomeTabController extends GetxController {
   Future<void> initiateCheckMeetingData(String tblMeetingId) async {
     meetingLoadingMap[tblMeetingId] = true;
     try {
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      Position position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      );
       defaultUserLat = position.latitude.toString();
       defaultUserLong = position.longitude.toString();
       //defaultUserLong = position.toString();
@@ -408,7 +412,10 @@ class HomeTabController extends GetxController {
   void getLatLong(String type) async{
 
     Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+      ),
+    );
     defaultUserLat= position.latitude.toString();
     defaultUserLong=position.longitude.toString();
 

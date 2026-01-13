@@ -36,7 +36,7 @@ class _LogOutDialogState extends State<LogOutDialog> {
           const EdgeInsets.only(left: 12.0, right: 12.0, top: 20),
           child: Container(
             decoration: ShapeDecoration(
-                color: Colors.white.withOpacity(1),
+                color: Colors.white.withValues(alpha: 1),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0))),
             width: double.infinity,

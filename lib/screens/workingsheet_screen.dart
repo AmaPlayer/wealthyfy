@@ -155,7 +155,7 @@ class _WorkingsheetScreenState extends State<WorkingsheetScreen> {
           if (record != null) {
              sheetObject.appendRow([
               record.empId ?? 'N/A',
-              record.fullName ?? 'N/A',
+              record.fullName,
               record.designationAbbr ?? 'N/A',
               record.createdDate ?? 'N/A',
               record.checkInTime ?? 'N/A',
@@ -168,7 +168,7 @@ class _WorkingsheetScreenState extends State<WorkingsheetScreen> {
             // Add Absent row
              sheetObject.appendRow([
               empInfo.empId ?? 'N/A',
-              empInfo.fullName ?? 'N/A',
+              empInfo.fullName,
               empInfo.designationAbbr ?? 'N/A',
               dateStr,
               'Absent',

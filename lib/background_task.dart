@@ -36,7 +36,6 @@ void callbackDispatcher() {
     }
   });
 }
-
 /// Returns payload Map to send to API, or null if we should not send anything.
 Future<Map<String, dynamic>?> _buildCheckpointPayload(Map<String, dynamic>? inputData) async {
   if (inputData == null) {
@@ -131,7 +130,11 @@ Future<Position?> _getPositionSafe() async {
       return null;
     }
 
-    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return await Geolocator.getCurrentPosition(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+      ),
+    );
   } catch (e) {
     _log("❌ Geolocator error: $e");
     return null;
@@ -155,7 +158,11 @@ Future<String?> _getAddressSafe(Position position) async {
       p.administrativeArea,
       p.postalCode,
       p.country,
-    ].where((e) => e != null && e!.trim().isNotEmpty).map((e) => e!.trim()).toList();
+    ]
+        .whereType<String>()
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
 
     return parts.join(", ");
   } catch (e) {

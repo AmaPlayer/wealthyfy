@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:meeting/helper/colors.dart';
 import 'package:meeting/helper/textview.dart';
@@ -15,14 +14,12 @@ class Status extends StatefulWidget {
 }
 
 class _StatusState extends State<Status> {
-  final List<bool> _isSelected = List.generate(10, (index) => false);
-
   int? selectedIndex;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:  EdgeInsets.only(top: 9),
+      padding: EdgeInsets.only(top: 9),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -31,85 +28,96 @@ class _StatusState extends State<Status> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('   Status',style: TextStyle(
-                    color: Colors.grey.shade800,fontSize: 16,fontWeight: FontWeight.w500
-                ),),
+                Text(
+                  '   Status',
+                  style: TextStyle(
+                      color: Colors.grey.shade800,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500),
+                ),
                 Align(
                     alignment: Alignment.topRight,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 20),
                       child: Column(
                         children: [
-                          Icon(Icons.arrow_circle_down_outlined,size: 20,),
-                          headingText(title: 'Download',fontSize: 10,
-                              color: ColorConstants.GREY7COLOR,fontWeight: FontWeight.bold)
+                          Icon(
+                            Icons.arrow_circle_down_outlined,
+                            size: 20,
+                          ),
+                          headingText(
+                              title: 'Download',
+                              fontSize: 10,
+                              color: ColorConstants.GREY7COLOR,
+                              fontWeight: FontWeight.bold)
                         ],
                       ),
                     )),
               ],
             ),
           ),
-
           SizedBox(
             height: 50,
             child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
-                itemCount:status.length ,
-                itemBuilder: (context,index){
+                itemCount: status.length,
+                itemBuilder: (context, index) {
                   var data = status[index];
                   bool isSelected = selectedIndex == index;
                   return InkWell(
-                    onTap: (){
+                    onTap: () {
                       setState(() {
                         selectedIndex = index;
                       });
                     },
                     child: Container(
-                      padding: EdgeInsets.only(top: 5,bottom: 5,left: 10,right: 10),
+                      padding: EdgeInsets.only(
+                          top: 5, bottom: 5, left: 10, right: 10),
                       height: 20,
                       margin: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                          color: isSelected? Colors.black : Colors.white,
-                          border: Border.all(
-                              color: Colors.grey
-                          ),
-                          borderRadius: BorderRadius.circular(5)
-                      ),
-                      child:  Center(
+                          color: isSelected ? Colors.black : Colors.white,
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Center(
                           child: Text(
-                            data.toString(),
-                            style: TextStyle(
-                              color: isSelected ? Colors.white : Colors.black,
-                            ),)),
+                        data.toString(),
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : Colors.black,
+                        ),
+                      )),
                     ),
                   );
                 }),
           ),
-
           Populars(),
         ],
       ),
     );
   }
+
   Widget Populars() {
     return Expanded(
       child: ListView.builder(
           shrinkWrap: true,
-
           itemCount: 10,
           itemBuilder: (context, index) {
             return InkWell(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>TeameLeaveDetails()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TeameLeaveDetails()));
               },
               child: Container(
                 height: 70,
-                padding: const EdgeInsets.only(left: 10, right: 5, top: 5, bottom: 5),
+                padding: const EdgeInsets.only(
+                    left: 10, right: 5, top: 5, bottom: 5),
                 margin: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                     color: ColorConstants.WHITECOLOR,
-                    boxShadow:  const [
+                    boxShadow: const [
                       BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)
                     ],
                     borderRadius: BorderRadius.circular(5)),
@@ -117,7 +125,10 @@ class _StatusState extends State<Status> {
                   children: [
                     Column(
                       children: [
-                        Icon(Icons.watch_later_outlined,color: ColorConstants.GREY6COLOR,),
+                        Icon(
+                          Icons.watch_later_outlined,
+                          color: ColorConstants.GREY6COLOR,
+                        ),
                         addPadding(10, 0),
                         headingText(title: '11:52'),
                       ],
@@ -147,9 +158,13 @@ class _StatusState extends State<Status> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            headingText(title: '27-11-2024',),
+                            headingText(
+                              title: '27-11-2024',
+                            ),
                             addPadding(0, 50),
-                            headingText(title: '10 Days',),
+                            headingText(
+                              title: '10 Days',
+                            ),
                           ],
                         )
                       ],
@@ -162,6 +177,7 @@ class _StatusState extends State<Status> {
     );
   }
 }
+
 // 2
 class Month extends StatefulWidget {
   const Month({super.key});
@@ -171,14 +187,12 @@ class Month extends StatefulWidget {
 }
 
 class _MonthState extends State<Month> {
-
   int? selectedIndex;
-
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:  EdgeInsets.only(top: 10),
+      padding: EdgeInsets.only(top: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -187,84 +201,98 @@ class _MonthState extends State<Month> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('   Select Month',style: TextStyle(
-                    color: Colors.grey.shade800,fontSize: 16,fontWeight: FontWeight.w500
-                ),),
+                Text(
+                  '   Select Month',
+                  style: TextStyle(
+                      color: Colors.grey.shade800,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500),
+                ),
                 Align(
                     alignment: Alignment.topRight,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 20),
                       child: Column(
                         children: [
-                          Icon(Icons.arrow_circle_down_outlined,size: 20,),
-                          headingText(title: 'Download',fontSize: 10,
-                              color: ColorConstants.GREY7COLOR,fontWeight: FontWeight.bold)
+                          Icon(
+                            Icons.arrow_circle_down_outlined,
+                            size: 20,
+                          ),
+                          headingText(
+                              title: 'Download',
+                              fontSize: 10,
+                              color: ColorConstants.GREY7COLOR,
+                              fontWeight: FontWeight.bold)
                         ],
                       ),
                     )),
               ],
             ),
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           SizedBox(
             height: 50,
             child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemCount:rangeprice.length ,
-                itemBuilder: (context,index){
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: rangeprice.length,
+                itemBuilder: (context, index) {
                   var data = rangeprice[index];
                   bool isSelected = selectedIndex == index;
-              return InkWell(
-                onTap: (){
-                  setState(() {
-                    selectedIndex = index;
-                  });
-                },
-                child: Container(
-                  padding: EdgeInsets.all(5),
-                  height: 20,
-                  margin: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      color: isSelected? Colors.black : Colors.white,
-                      border: Border.all(
-                          color: Colors.grey
-                      ),
-                      borderRadius: BorderRadius.circular(5)
-                  ),
-                  child:  Center(
-                      child: Text(
+                  return InkWell(
+                    onTap: () {
+                      setState(() {
+                        selectedIndex = index;
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(5),
+                      height: 20,
+                      margin: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: isSelected ? Colors.black : Colors.white,
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Center(
+                          child: Text(
                         data.toString(),
                         style: TextStyle(
                           color: isSelected ? Colors.white : Colors.black,
-                        ),)),
-                ),
-              );
-            }),
+                        ),
+                      )),
+                    ),
+                  );
+                }),
           ),
           Populars(),
         ],
       ),
     );
   }
+
   Widget Populars() {
     return Expanded(
       child: ListView.builder(
           shrinkWrap: true,
-
           itemCount: 10,
           itemBuilder: (context, index) {
             return InkWell(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>TeameLeaveDetails()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TeameLeaveDetails()));
               },
               child: Container(
                 height: 70,
-                padding: const EdgeInsets.only(left: 10, right: 5, top: 5, bottom: 5),
+                padding: const EdgeInsets.only(
+                    left: 10, right: 5, top: 5, bottom: 5),
                 margin: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                     color: ColorConstants.WHITECOLOR,
-                    boxShadow:  const [
+                    boxShadow: const [
                       BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)
                     ],
                     borderRadius: BorderRadius.circular(5)),
@@ -272,7 +300,10 @@ class _MonthState extends State<Month> {
                   children: [
                     Column(
                       children: [
-                        Icon(Icons.watch_later_outlined,color: ColorConstants.GREY6COLOR,),
+                        Icon(
+                          Icons.watch_later_outlined,
+                          color: ColorConstants.GREY6COLOR,
+                        ),
                         addPadding(10, 0),
                         headingText(title: '11:52'),
                       ],
@@ -302,9 +333,13 @@ class _MonthState extends State<Month> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            headingText(title: '27-11-2024',),
+                            headingText(
+                              title: '27-11-2024',
+                            ),
                             addPadding(0, 50),
-                            headingText(title: '10 Days',),
+                            headingText(
+                              title: '10 Days',
+                            ),
                           ],
                         )
                       ],
@@ -316,8 +351,8 @@ class _MonthState extends State<Month> {
           }),
     );
   }
-
 }
+
 // 3
 class Date extends StatefulWidget {
   const Date({super.key});
@@ -327,7 +362,6 @@ class Date extends StatefulWidget {
 }
 
 class _DateState extends State<Date> {
-
   DateTime currentDate = DateTime.now();
   String? selectedDateForBD;
 
@@ -360,11 +394,10 @@ class _DateState extends State<Date> {
       setState(() {
         currentDate = picked;
         selectedDateForBD =
-        '${currentDate.year}/${currentDate.month}/${currentDate.day}';
+            '${currentDate.year}/${currentDate.month}/${currentDate.day}';
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -379,16 +412,23 @@ class _DateState extends State<Date> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                headingText(title: 'Date',fontSize: 14,fontWeight: FontWeight.bold),
+                headingText(
+                    title: 'Date', fontSize: 14, fontWeight: FontWeight.bold),
                 Align(
                     alignment: Alignment.topRight,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 20),
                       child: Column(
                         children: [
-                          Icon(Icons.arrow_circle_down_outlined,size: 20,),
-                          headingText(title: 'Download',fontSize: 10,
-                              color: ColorConstants.GREY7COLOR,fontWeight: FontWeight.bold)
+                          Icon(
+                            Icons.arrow_circle_down_outlined,
+                            size: 20,
+                          ),
+                          headingText(
+                              title: 'Download',
+                              fontSize: 10,
+                              color: ColorConstants.GREY7COLOR,
+                              fontWeight: FontWeight.bold)
                         ],
                       ),
                     )),
@@ -398,16 +438,13 @@ class _DateState extends State<Date> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: InkWell(
-              onTap: ()=> _selectDate(context),
+              onTap: () => _selectDate(context),
               child: Container(
                 width: double.infinity,
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  border: Border.all(
-                    color: ColorConstants.GREYCOLOR
-                  )
-                ),
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(color: ColorConstants.GREYCOLOR)),
                 child: Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -431,24 +468,28 @@ class _DateState extends State<Date> {
       ),
     );
   }
+
   Widget Populars() {
     return Expanded(
       child: ListView.builder(
           shrinkWrap: true,
-
           itemCount: 10,
           itemBuilder: (context, index) {
             return InkWell(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>TeameLeaveDetails()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TeameLeaveDetails()));
               },
               child: Container(
                 height: 70,
-                padding: const EdgeInsets.only(left: 10, right: 5, top: 5, bottom: 5),
+                padding: const EdgeInsets.only(
+                    left: 10, right: 5, top: 5, bottom: 5),
                 margin: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                     color: ColorConstants.WHITECOLOR,
-                    boxShadow:  const [
+                    boxShadow: const [
                       BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)
                     ],
                     borderRadius: BorderRadius.circular(5)),
@@ -456,7 +497,10 @@ class _DateState extends State<Date> {
                   children: [
                     Column(
                       children: [
-                        Icon(Icons.watch_later_outlined,color: ColorConstants.GREY6COLOR,),
+                        Icon(
+                          Icons.watch_later_outlined,
+                          color: ColorConstants.GREY6COLOR,
+                        ),
                         addPadding(10, 0),
                         headingText(title: '11:52'),
                       ],
@@ -486,9 +530,13 @@ class _DateState extends State<Date> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            headingText(title: '27-11-2024',),
+                            headingText(
+                              title: '27-11-2024',
+                            ),
                             addPadding(0, 50),
-                            headingText(title: '10 Days',),
+                            headingText(
+                              title: '10 Days',
+                            ),
                           ],
                         )
                       ],
@@ -501,6 +549,7 @@ class _DateState extends State<Date> {
     );
   }
 }
+
 // 4
 class Today extends StatefulWidget {
   const Today({super.key});
@@ -512,11 +561,10 @@ class Today extends StatefulWidget {
 class _TodayState extends State<Today> {
   int? selectedIndex;
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:  EdgeInsets.only(top: 10),
+      padding: EdgeInsets.only(top: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -525,18 +573,28 @@ class _TodayState extends State<Today> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('   Days',style: TextStyle(
-                    color: Colors.grey.shade800,fontSize: 16,fontWeight: FontWeight.w500
-                ),),
+                Text(
+                  '   Days',
+                  style: TextStyle(
+                      color: Colors.grey.shade800,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500),
+                ),
                 Align(
                     alignment: Alignment.topRight,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 20),
                       child: Column(
                         children: [
-                          Icon(Icons.arrow_circle_down_outlined,size: 20,),
-                          headingText(title: 'Download',fontSize: 10,
-                              color: ColorConstants.GREY7COLOR,fontWeight: FontWeight.bold)
+                          Icon(
+                            Icons.arrow_circle_down_outlined,
+                            size: 20,
+                          ),
+                          headingText(
+                              title: 'Download',
+                              fontSize: 10,
+                              color: ColorConstants.GREY7COLOR,
+                              fontWeight: FontWeight.bold)
                         ],
                       ),
                     )),
@@ -568,39 +626,42 @@ class _TodayState extends State<Today> {
                           borderRadius: BorderRadius.circular(5)),
                       child: Center(
                           child: Text(
-                            data.toString(),
-                            style: TextStyle(
-                              color: isSelected ? Colors.white : Colors.black,
-                            ),
-                          )),
+                        data.toString(),
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : Colors.black,
+                        ),
+                      )),
                     ),
                   );
                 }),
           ),
-
           Populars(),
         ],
       ),
     );
   }
+
   Widget Populars() {
     return Expanded(
       child: ListView.builder(
           shrinkWrap: true,
-
           itemCount: 10,
           itemBuilder: (context, index) {
             return InkWell(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>TeameLeaveDetails()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TeameLeaveDetails()));
               },
               child: Container(
                 height: 70,
-                padding: const EdgeInsets.only(left: 10, right: 5, top: 5, bottom: 5),
+                padding: const EdgeInsets.only(
+                    left: 10, right: 5, top: 5, bottom: 5),
                 margin: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                     color: ColorConstants.WHITECOLOR,
-                    boxShadow:  const [
+                    boxShadow: const [
                       BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)
                     ],
                     borderRadius: BorderRadius.circular(5)),
@@ -608,7 +669,10 @@ class _TodayState extends State<Today> {
                   children: [
                     Column(
                       children: [
-                        Icon(Icons.watch_later_outlined,color: ColorConstants.GREY6COLOR,),
+                        Icon(
+                          Icons.watch_later_outlined,
+                          color: ColorConstants.GREY6COLOR,
+                        ),
                         addPadding(10, 0),
                         headingText(title: '11:52'),
                       ],
@@ -638,9 +702,13 @@ class _TodayState extends State<Today> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            headingText(title: '27-11-2024',),
+                            headingText(
+                              title: '27-11-2024',
+                            ),
                             addPadding(0, 50),
-                            headingText(title: '10 Days',),
+                            headingText(
+                              title: '10 Days',
+                            ),
                           ],
                         )
                       ],
@@ -653,6 +721,7 @@ class _TodayState extends State<Today> {
     );
   }
 }
+
 // 5
 class Years extends StatefulWidget {
   const Years({super.key});
@@ -666,8 +735,8 @@ class _YearsState extends State<Years> {
 
   @override
   Widget build(BuildContext context) {
-    return  Padding(
-      padding:  EdgeInsets.only(top: 10),
+    return Padding(
+      padding: EdgeInsets.only(top: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -676,9 +745,13 @@ class _YearsState extends State<Years> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('   Years',style: TextStyle(
-                    color: Colors.grey.shade800,fontSize: 16,fontWeight: FontWeight.w500
-                ),),
+                Text(
+                  '   Years',
+                  style: TextStyle(
+                      color: Colors.grey.shade800,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500),
+                ),
                 Align(
                     alignment: Alignment.topRight,
                     child: Padding(
@@ -686,7 +759,9 @@ class _YearsState extends State<Years> {
                       child: Column(
                         children: [
                           Icon(Icons.arrow_circle_down_outlined),
-                          headingText(title: 'Download',color: ColorConstants.GREY7COLOR,
+                          headingText(
+                              title: 'Download',
+                              color: ColorConstants.GREY7COLOR,
                               fontWeight: FontWeight.bold)
                         ],
                       ),
@@ -694,7 +769,9 @@ class _YearsState extends State<Years> {
               ],
             ),
           ),
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           SizedBox(
             height: 50,
             child: ListView.builder(
@@ -711,7 +788,8 @@ class _YearsState extends State<Years> {
                       });
                     },
                     child: Container(
-                      padding: const EdgeInsets.only(top: 5,bottom: 5,left: 10,right: 10),
+                      padding: const EdgeInsets.only(
+                          top: 5, bottom: 5, left: 10, right: 10),
                       height: 20,
                       margin: EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -720,11 +798,11 @@ class _YearsState extends State<Years> {
                           borderRadius: BorderRadius.circular(5)),
                       child: Center(
                           child: Text(
-                            data.toString(),
-                            style: TextStyle(
-                              color: isSelected ? Colors.white : Colors.black,
-                            ),
-                          )),
+                        data.toString(),
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : Colors.black,
+                        ),
+                      )),
                     ),
                   );
                 }),
@@ -734,24 +812,28 @@ class _YearsState extends State<Years> {
       ),
     );
   }
+
   Widget Populars() {
     return Expanded(
       child: ListView.builder(
           shrinkWrap: true,
-
           itemCount: 10,
           itemBuilder: (context, index) {
             return InkWell(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>TeameLeaveDetails()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TeameLeaveDetails()));
               },
               child: Container(
                 height: 70,
-                padding: const EdgeInsets.only(left: 10, right: 5, top: 5, bottom: 5),
+                padding: const EdgeInsets.only(
+                    left: 10, right: 5, top: 5, bottom: 5),
                 margin: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                     color: ColorConstants.WHITECOLOR,
-                    boxShadow:  const [
+                    boxShadow: const [
                       BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)
                     ],
                     borderRadius: BorderRadius.circular(5)),
@@ -759,7 +841,10 @@ class _YearsState extends State<Years> {
                   children: [
                     Column(
                       children: [
-                        Icon(Icons.watch_later_outlined,color: ColorConstants.GREY6COLOR,),
+                        Icon(
+                          Icons.watch_later_outlined,
+                          color: ColorConstants.GREY6COLOR,
+                        ),
                         addPadding(10, 0),
                         headingText(title: '11:52'),
                       ],
@@ -789,9 +874,13 @@ class _YearsState extends State<Years> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            headingText(title: '27-11-2024',),
+                            headingText(
+                              title: '27-11-2024',
+                            ),
                             addPadding(0, 50),
-                            headingText(title: '10 Days',),
+                            headingText(
+                              title: '10 Days',
+                            ),
                           ],
                         )
                       ],

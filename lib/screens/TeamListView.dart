@@ -81,18 +81,18 @@ class _TeamLisViewState extends State<TeamLisView> {
       // 3. Add employee data to the Excel sheet
       for (var teamMember in teamList) {
         sheetObject.appendRow([
-          teamMember.empId ?? 'N/A',
-          teamMember.tblOfficeId ?? 'N/A',
-          teamMember.officeName ?? 'N/A',
-          teamMember.designationType ?? 'N/A',
-          teamMember.designationName ?? 'N/A',
-          teamMember.fullName ?? 'N/A',
-          teamMember.email ?? 'N/A',
-          teamMember.mobile ?? 'N/A',
-          teamMember.checkInStatus ?? 'N/A',
-          teamMember.checkOutStatus ?? 'N/A',
-          teamMember.userImage ?? 'N/A',
-          teamMember.createdDate ?? 'N/A',
+          teamMember.empId,
+          teamMember.tblOfficeId,
+          teamMember.officeName,
+          teamMember.designationType,
+          teamMember.designationName,
+          teamMember.fullName,
+          teamMember.email,
+          teamMember.mobile,
+          teamMember.checkInStatus,
+          teamMember.checkOutStatus,
+          teamMember.userImage,
+          teamMember.createdDate,
           todayDate, // Adding today's date
         ]);
       }

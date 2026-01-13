@@ -11,20 +11,20 @@ SizedBox addPadding(double height,double width,)=>SizedBox(height: height,width:
 class SATextField2 extends StatelessWidget {
   final String hintText;
   final TextEditingController controller;
-  EdgeInsetsGeometry? contentPadding;
-  TextInputType? keyboardType;
-  int limit;
-  Widget? suffixIcon;
-  TextAlign? textAlign;
-  Widget? prefixIcon;
-  int? maxLines;
-  bool? readOnly;
+  final EdgeInsetsGeometry? contentPadding;
+  final TextInputType? keyboardType;
+  final int limit;
+  final Widget? suffixIcon;
+  final TextAlign? textAlign;
+  final Widget? prefixIcon;
+  final int? maxLines;
+  final bool? readOnly;
 
-  void Function()? onTap;
-  List<TextInputFormatter>? inputFormatters;
-  void Function(String)? onChanged;
+  final void Function()? onTap;
+  final List<TextInputFormatter>? inputFormatters;
+  final void Function(String)? onChanged;
 
-  var color;
+  final Color? color;
 
   SATextField2(
       {super.key,
@@ -76,10 +76,10 @@ class SATextField2 extends StatelessWidget {
 
 class labelHeadingText extends StatelessWidget {
   final String title;
-  Color? color;
-  double? fontSize;
-  TextAlign? align;
-  FontWeight? fontWeight;
+  final Color? color;
+  final double? fontSize;
+  final TextAlign? align;
+  final FontWeight? fontWeight;
   labelHeadingText({super.key, required this.title, this.color, this.fontSize, this.align, this.fontWeight});
 
   @override

@@ -31,7 +31,6 @@ Future<void> main() async {
     // Initialize Workmanager (not supported on web)
     Workmanager().initialize(
       callbackDispatcher,
-      isInDebugMode: true, // Set to false in production
     );
   }
 
@@ -73,7 +72,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   FirebaseMessaging? _firebaseMessaging;
-  PushNotification? _notificationInfo;
 
   @override
   void initState() {
@@ -125,13 +123,10 @@ class _MyAppState extends State<MyApp> {
     RemoteMessage? initialMessage =
         await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null) {
-      PushNotification notification = PushNotification(
+      PushNotification(
         title: initialMessage.notification?.title,
         body: initialMessage.notification?.body,
       );
-      setState(() {
-        _notificationInfo = notification;
-      });
     }
   }
 
@@ -179,7 +174,7 @@ class WelcomeStateController extends GetxController {
       ..backgroundColor = Colors.white
       ..indicatorColor = Color(0xFF5d0c1d)
       ..textColor = Colors.yellow
-      ..maskColor = Colors.blue.withOpacity(0.5)
+      ..maskColor = Colors.blue.withValues(alpha: 0.5)
       ..userInteractions = true
       ..dismissOnTap = false
       ..customAnimation = CustomAnimation();

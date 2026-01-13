@@ -56,7 +56,7 @@ class _ProfileTabState extends State<ProfileTab> {
               )
             : SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                child: dController.profileData.value.isEmpty
+                child: dController.profileData.isEmpty
                     ? const DataNotFound(
                         color: Colors.black,
                       )
@@ -110,7 +110,7 @@ class _ProfileTabState extends State<ProfileTab> {
             margin: const EdgeInsets.only(top: 10, bottom: 10, left: 30),
             height: 1,
             width: double.infinity,
-            color: ColorConstants.GREYCOLOR.withOpacity(0.6),
+            color: ColorConstants.GREYCOLOR.withValues(alpha: 0.6),
           ),
           Row(
             children: [
@@ -137,7 +137,7 @@ class _ProfileTabState extends State<ProfileTab> {
             margin: const EdgeInsets.only(top: 10, bottom: 10, left: 30),
             height: 1,
             width: double.infinity,
-            color: ColorConstants.GREYCOLOR.withOpacity(0.6),
+            color: ColorConstants.GREYCOLOR.withValues(alpha: 0.6),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -311,13 +311,13 @@ class _ProfileTabState extends State<ProfileTab> {
           child: Column(
             children: [
               headingText(
-                  title: dController.profileData.value.first.fullName.capitalizeFirst.toString(),
+                  title: dController.profileData.first.fullName.capitalizeFirst.toString(),
                   color: ColorConstants.DarkMahroon,
                   fontSize: 18,
                   fontWeight: FontWeight.bold),
               addPadding(0, 0),
               headingText(
-                  title: dController.profileData.value.first.designationName.capitalizeFirst.toString().toString(),
+                  title: dController.profileData.first.designationName.capitalizeFirst.toString().toString(),
                   fontWeight: FontWeight.w700,
                   color: ColorConstants.DarkMahroon,
                   fontSize: 18),

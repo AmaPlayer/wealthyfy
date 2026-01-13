@@ -9,7 +9,7 @@ import '../helper/textview.dart';
 
 
 class MyLeaveDetails extends StatefulWidget {
-  String tbl_leaveid;
+  final String tbl_leaveid;
    MyLeaveDetails({super.key,required this.tbl_leaveid});
 
   @override

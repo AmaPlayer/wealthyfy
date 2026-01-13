@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meeting/controller/HomeTabController.dart';
@@ -26,7 +25,6 @@ class DashboardController extends GetxController {
 
     selectedIndex.value = index;
   }
-  File? _image;
   final firstTimeOpenProDialog = false.obs;
   @override
   void onInit() {

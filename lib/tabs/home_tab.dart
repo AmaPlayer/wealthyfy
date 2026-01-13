@@ -153,7 +153,7 @@ class HomeTab extends GetView<HomeTabController> {
                       InkWell(
                         onTap: () {
                           controller.isLoading.value = true;
-                          if(controller.profileData.value.first.checkInStatus == "yes"){
+                          if(controller.profileData.first.checkInStatus == "yes"){
                             showErrorBottomSheet("Already Checked in");
                             controller.isLoading.value = false;
                           }else{

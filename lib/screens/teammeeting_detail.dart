@@ -14,7 +14,7 @@ import 'edit_meetingdetails_screen.dart';
 class PersonDetail extends StatefulWidget {
   final String tbl_meetingID;
   final int tabPosition;
-  DashboardController dController = Get.find<DashboardController>();
+  final DashboardController dController = Get.find<DashboardController>();
 
  PersonDetail({super.key, required this.tbl_meetingID, required this.tabPosition});
 

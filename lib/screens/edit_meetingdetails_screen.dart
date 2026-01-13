@@ -15,7 +15,7 @@ import 'bottom_screen.dart';
 
 class EditMeetingDetailsScreen extends StatefulWidget {
   final dynamic tbl_meetingid;
-  List<MeetingDetailDatum> userMeetingDetailslist = [];
+  final List<MeetingDetailDatum> userMeetingDetailslist;
 
   EditMeetingDetailsScreen({
     super.key,
@@ -115,7 +115,6 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
 
   bool _isSelected = false;
 
-  @override
   void containerselect() {
     setState(() {
       _isSelected = !_isSelected;
