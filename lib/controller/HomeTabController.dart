@@ -216,6 +216,34 @@ class HomeTabController extends GetxController {
   Future<void> initiateCheckMeetingData(String tblMeetingId) async {
     meetingLoadingMap[tblMeetingId] = true;
     try {
+      final permission = await Geolocator.checkPermission();
+      if (permission != LocationPermission.always) {
+        meetingLoadingMap[tblMeetingId] = false;
+        Get.dialog(
+          AlertDialog(
+            title: const Text("Location Permission Required"),
+            content: const Text(
+              "Please set location permission to 'Always allow' to check in.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Get.back(),
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () async {
+                  await Geolocator.openLocationSettings();
+                  Get.back();
+                },
+                child: const Text("Open Settings"),
+              ),
+            ],
+          ),
+          barrierDismissible: false,
+        );
+        return;
+      }
+
       Position position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,
@@ -244,7 +272,6 @@ class HomeTabController extends GetxController {
         print("City: $userCity, Country: $country");
       }
 
-      final permission = await Geolocator.checkPermission();
       final permissionValue = permission == LocationPermission.always
           ? "always"
           : (permission == LocationPermission.denied || permission == LocationPermission.deniedForever)
