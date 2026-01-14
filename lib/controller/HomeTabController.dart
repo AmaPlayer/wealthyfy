@@ -244,6 +244,13 @@ class HomeTabController extends GetxController {
         print("City: $userCity, Country: $country");
       }
 
+      final permission = await Geolocator.checkPermission();
+      final permissionValue = permission == LocationPermission.always
+          ? "always"
+          : (permission == LocationPermission.denied || permission == LocationPermission.deniedForever)
+              ? "denied"
+              : "while_in_use";
+
       var hashMap = {
         "tbl_user_id": viewLoginDetail!.data.first.tblUserId.toString(),
         "tbl_office_id": viewLoginDetail!.data.first.tblOfficeId.toString(),
@@ -251,6 +258,7 @@ class HomeTabController extends GetxController {
         "meeting_check_in_latitude": defaultUserLat,
         "meeting_check_in_longitude": defaultUserLong,
         "meeting_check_in_full_address": userFullAddress,
+        "location_permission_status": permissionValue,
       };
       print("MEETING_CHECKIN_DATA => $hashMap");
       var onValue = await meetingCheckInApi(hashMap);
@@ -260,9 +268,6 @@ class HomeTabController extends GetxController {
         !(upCheckButtonMap[tblMeetingId] ?? false);
 
         try {
-          final permission = await Geolocator.checkPermission();
-          final permissionValue =
-              permission == LocationPermission.always ? "always" : "while_in_use";
           await meetingPermissionCheckApi({
             "tbl_user_id": viewLoginDetail!.data.first.tblUserId.toString(),
             "tbl_meeting_id": tblMeetingId.toString(),
