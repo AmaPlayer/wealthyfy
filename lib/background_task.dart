@@ -68,12 +68,20 @@ Future<Map<String, dynamic>?> _buildCheckpointPayload(Map<String, dynamic>? inpu
   final int? intendedCheckpoint = int.tryParse(checkpointStr ?? "");
   int? checkpointNumber;
   if (intendedCheckpoint == 1 || intendedCheckpoint == 2) {
-    checkpointNumber = intendedCheckpoint;
-    if (elapsedMinutes != null) {
-      _log("Using intended checkpoint=$checkpointNumber, elapsedMinutes=$elapsedMinutes");
-    } else {
-      _log("Using intended checkpoint=$checkpointNumber");
+    if (elapsedMinutes == null) {
+      _log("??O Missing initial_check_in_timestamp for checkpoint gating");
+      return null;
     }
+    if (intendedCheckpoint == 1 && !(elapsedMinutes >= 4 && elapsedMinutes < 9)) {
+      _log("??O Checkpoint 1 window not reached. elapsedMinutes=$elapsedMinutes");
+      return null;
+    }
+    if (intendedCheckpoint == 2 && !(elapsedMinutes >= 9 && elapsedMinutes < 21)) {
+      _log("??O Checkpoint 2 window not reached. elapsedMinutes=$elapsedMinutes");
+      return null;
+    }
+    checkpointNumber = intendedCheckpoint;
+    _log("Using intended checkpoint=$checkpointNumber, elapsedMinutes=$elapsedMinutes");
   } else if (elapsedMinutes != null) {
     checkpointNumber = _resolveCheckpoint(elapsedMinutes);
   } else {
@@ -176,4 +184,3 @@ void _log(String msg) {
   // ignore: avoid_print
   print("[FAKE_CHECK_BG] $msg");
 }
-

@@ -46,6 +46,22 @@ class MeetingTab extends GetView<HomeTabController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   addPadding(15, 0),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: ColorConstants.GREY4COLOR,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: ColorConstants.GREYCOLOR),
+                    ),
+                    child: headingFullText(
+                      title: "Note: Please allow location permission as 'always allow' before check-in to ensure meeting approval.",
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: ColorConstants.BLACKCOLOR,
+                    ),
+                  ),
+                  addPadding(10, 0),
                   headingText(
                     title: 'Customer Information',
                     fontSize: 16,
