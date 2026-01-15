@@ -457,6 +457,7 @@ class HomeTabController extends GetxController {
           }
         }
         incompleteMeetingList.refresh();
+        refreshIncompleteMeetings();
       } else {
         showErrorBottomSheet(onValue.message.toString());
       }
