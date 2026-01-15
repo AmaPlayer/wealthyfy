@@ -156,8 +156,8 @@ class MeetingDatum {
     meetingTimeSlotTo: json["meeting_time_slot_to"]!,
     meetingDate: json["meeting_date"],
     meetingTime: json["meeting_time"],
-    meetingCheckInStatus: json["meeting_check_in_status"]?.toString() ?? "",
-    meetingCheckOutStatus: json["meeting_check_out_status"]?.toString() ?? "",
+    meetingCheckInStatus: _normalizeStatus(json["meeting_check_in_status"]),
+    meetingCheckOutStatus: _normalizeStatus(json["meeting_check_out_status"]),
     meetingCheckOutDateTime: json["meeting_check_out_date_time"] ?? "",
     meetingCheckOutFullAddress: json["meeting_check_out_full_address"] ?? "",
     meetingMinutes: json["meeting_minutes"] ?? "",
@@ -206,4 +206,11 @@ class MeetingDatum {
     "meeting_check_out_full_address": meetingCheckOutFullAddress,
     "meeting_minutes": meetingMinutes,
   };
+}
+
+String _normalizeStatus(dynamic value) {
+  if (value == null) return "";
+  final raw = value.toString().toLowerCase();
+  if (raw == "1" || raw == "yes" || raw == "true") return "yes";
+  return "no";
 }

@@ -5,9 +5,11 @@ import 'package:meeting/APIs/Api.dart';
 import 'package:meeting/APIs/user_data.dart';
 import 'package:meeting/controller/HomeTabController.dart';
 import 'package:meeting/controller/button_controller/custombuttom.dart';
+import 'package:meeting/controller/dashboardcontroller.dart';
 import 'package:meeting/helper/ErrorBottomSheet.dart';
 import 'package:meeting/helper/colors.dart';
 import 'package:meeting/helper/textview.dart';
+import 'package:meeting/screens/bottom_screen.dart';
 
 class MeetingMinutesScreen extends StatefulWidget {
   final String tblMeetingId;
@@ -84,7 +86,8 @@ class _MeetingMinutesScreenState extends State<MeetingMinutesScreen> {
       final controller = Get.find<HomeTabController>();
       controller.refreshIncompleteMeetings();
       if (mounted) {
-        Navigator.pop(context);
+        Get.find<DashboardController>().onItemTapped(0);
+        Get.offAll(MyBottomBar());
       }
     } else {
       showErrorBottomSheet(onValue.message);
@@ -157,11 +160,16 @@ class _MeetingMinutesScreenState extends State<MeetingMinutesScreen> {
             Center(
               child: CustomButton(
                 text: isSubmitting ? 'Submitting...' : 'Submit',
-                onPressed: withinOneMonth ? _submitMinutes : () {},
+                onPressed: withinOneMonth && !isSubmitting ? _submitMinutes : () {},
                 color: withinOneMonth ? ColorConstants.DarkMahroon : ColorConstants.GREYCOLOR,
                 width: 150,
+                textStyle: const TextStyle(color: Colors.white, fontSize: 16),
               ),
             ),
+            if (isSubmitting) ...[
+              addPadding(10, 0),
+              const Center(child: CircularProgressIndicator()),
+            ],
           ],
         ),
       ),

@@ -132,8 +132,8 @@ class DasApprovedMeetingDatum {
     approvedByUserType: json["approved_by_user_type"],
     approvedByUserDate: json["approved_by_user_date"],
     approvedByUserTime: json["approved_by_user_time"],
-    meetingCheckInStatus: json["meeting_check_in_status"]?.toString() ?? "",
-    meetingCheckOutStatus: json["meeting_check_out_status"]?.toString() ?? "",
+    meetingCheckInStatus: _normalizeStatus(json["meeting_check_in_status"]),
+    meetingCheckOutStatus: _normalizeStatus(json["meeting_check_out_status"]),
     meetingCheckOutDateTime: json["meeting_check_out_date_time"] ?? "",
   );
 
@@ -172,4 +172,11 @@ class DasApprovedMeetingDatum {
     "meeting_check_out_status": meetingCheckOutStatus,
     "meeting_check_out_date_time": meetingCheckOutDateTime,
   };
+}
+
+String _normalizeStatus(dynamic value) {
+  if (value == null) return "";
+  final raw = value.toString().toLowerCase();
+  if (raw == "1" || raw == "yes" || raw == "true") return "yes";
+  return "no";
 }

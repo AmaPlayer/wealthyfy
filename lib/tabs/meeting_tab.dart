@@ -1056,23 +1056,25 @@ class MeetingTab extends GetView<HomeTabController> {
               ),
               addPadding(15, 0),
               Center(
-                child: CustomButton(
-                  text: 'Submit',
-                  onPressed: () {
-                    if (controller.formkey.currentState!.validate() && controller.isSelected.value) {
-                      if(controller.selectedStartTime.toString()!=""){
-                        controller.initiateCreateMeetingData();
-                      }else{
-                        showErrorBottomSheet("Please select slot");
-                      }
-
-                    }
-                  },
-                  width: 150,
-                  color: controller.isSelected.value
-                      ? ColorConstants.DarkMahroon
-                      : ColorConstants.GREYCOLOR,
-                ),
+                child: Obx(() => CustomButton(
+                      text: controller.isCreateMeetingLoading.value ? 'Submitting...' : 'Submit',
+                      onPressed: controller.isCreateMeetingLoading.value
+                          ? () {}
+                          : () {
+                              if (controller.formkey.currentState!.validate() && controller.isSelected.value) {
+                                if (controller.selectedStartTime.toString() != "") {
+                                  controller.initiateCreateMeetingData();
+                                } else {
+                                  showErrorBottomSheet("Please select slot");
+                                }
+                              }
+                            },
+                      width: 150,
+                      color: controller.isSelected.value
+                          ? ColorConstants.DarkMahroon
+                          : ColorConstants.GREYCOLOR,
+                      textStyle: const TextStyle(color: Colors.white, fontSize: 16),
+                    )),
               ),
               addPadding(15, 0),
             ],
@@ -1136,31 +1138,35 @@ class MeetingTab extends GetView<HomeTabController> {
                   addPadding(10, 0),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: hasCheckedOut
-                        ? CustomButton(
-                            text: 'Complete',
-                            onPressed: () {
-                              Get.to(MeetingMinutesScreen(
-                                tblMeetingId: meeting.tblMeetingId,
-                                meetingDate: meeting.meetingDate,
-                                initialMinutes: meeting.meetingMinutes,
-                              ));
-                            },
-                            color: ColorConstants.DarkMahroon,
-                            width: 120,
-                          )
-                        : CustomButton(
-                            text: 'Check Out',
-                            onPressed: () {
-                              if (!hasCheckedIn) {
-                                showErrorBottomSheet("Please check in before check out.");
-                                return;
-                              }
-                              controller.initiateMeetingCheckOutData(meeting.tblMeetingId);
-                            },
-                            color: ColorConstants.REDCOLOR,
-                            width: 120,
-                          ),
+                    child: SizedBox(
+                      width: 110,
+                      height: 40,
+                      child: hasCheckedOut
+                          ? CustomButton(
+                              text: 'Complete',
+                              onPressed: () {
+                                Get.to(MeetingMinutesScreen(
+                                  tblMeetingId: meeting.tblMeetingId,
+                                  meetingDate: meeting.meetingDate,
+                                  initialMinutes: meeting.meetingMinutes,
+                                ));
+                              },
+                              color: ColorConstants.DarkMahroon,
+                              textStyle: const TextStyle(color: Colors.white, fontSize: 14),
+                            )
+                          : CustomButton(
+                              text: 'Check Out',
+                              onPressed: () {
+                                if (!hasCheckedIn) {
+                                  showErrorBottomSheet("Please check in before check out.");
+                                  return;
+                                }
+                                controller.initiateMeetingCheckOutData(meeting.tblMeetingId);
+                              },
+                              color: ColorConstants.REDCOLOR,
+                              textStyle: const TextStyle(color: Colors.white, fontSize: 14),
+                            ),
+                    ),
                   ),
                 ],
               ),

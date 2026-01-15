@@ -34,6 +34,7 @@ class HomeTabController extends GetxController {
   RxBool fixedDepositSelected = false.obs;
   RxBool loanSelected = false.obs;
   RxBool insuranceSelected = false.obs;
+  RxBool isCreateMeetingLoading = false.obs;
   final formkey = GlobalKey<FormState>();
   TextEditingController customerIdController = TextEditingController();
   TextEditingController clientNameController = TextEditingController();
@@ -299,6 +300,20 @@ class HomeTabController extends GetxController {
         showSuccessBottomSheet(onValue.message.toString());
         upCheckButtonMap[tblMeetingId] =
         !(upCheckButtonMap[tblMeetingId] ?? false);
+        for (final meeting in dashboardApprovedMeetingList) {
+          if (meeting.tblMeetingId == tblMeetingId) {
+            meeting.meetingCheckInStatus = "yes";
+            break;
+          }
+        }
+        dashboardApprovedMeetingList.refresh();
+        for (final meeting in incompleteMeetingList) {
+          if (meeting.tblMeetingId == tblMeetingId) {
+            meeting.meetingCheckInStatus = "yes";
+            break;
+          }
+        }
+        incompleteMeetingList.refresh();
 
         try {
           await meetingPermissionCheckApi({
@@ -467,6 +482,10 @@ class HomeTabController extends GetxController {
     isSelected.value = !isSelected.value;
   }
   void initiateCreateMeetingData() {
+    if (isCreateMeetingLoading.value) {
+      return;
+    }
+    isCreateMeetingLoading.value = true;
     var hashMap = {
       "tbl_user_id": viewLoginDetail!.data.first.tblUserId.toString(),
       "tbl_office_id": viewLoginDetail!.data.first.tblOfficeId.toString(),
@@ -512,11 +531,17 @@ class HomeTabController extends GetxController {
         selectLocationController.clear();
         dController.onItemTapped(0);
         showSuccessBottomSheet(onValue.message);
+        isCreateMeetingLoading.value = false;
 
       } else {
         showErrorBottomSheet(onValue.message);
+        isCreateMeetingLoading.value = false;
 
       }
+    }).catchError((error) {
+      print("CREATE_MEETING_ERROR=>$error");
+      showErrorBottomSheet(error.toString());
+      isCreateMeetingLoading.value = false;
     });
   }
 

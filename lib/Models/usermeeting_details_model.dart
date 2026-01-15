@@ -146,9 +146,9 @@ class MeetingDetailDatum {
     fullName: json["full_name"],
     designationAbbr: json["designation_abbr"],
     meetingCheckInFullAddress: json["meeting_check_in_full_address"],
-    meetingCheckInStatus: json["meeting_check_in_status"]?.toString() ?? "",
+    meetingCheckInStatus: _normalizeStatus(json["meeting_check_in_status"]),
     meetingCheckInDateTime: json["meeting_check_in_date_time"],
-    meetingCheckOutStatus: json["meeting_check_out_status"]?.toString() ?? "",
+    meetingCheckOutStatus: _normalizeStatus(json["meeting_check_out_status"]),
     meetingCheckOutDateTime: json["meeting_check_out_date_time"] ?? "",
     meetingCheckOutFullAddress: json["meeting_check_out_full_address"] ?? "",
     meetingCheckOutLatitude: json["meeting_check_out_latitude"] ?? "",
@@ -203,4 +203,11 @@ class MeetingDetailDatum {
     "meeting_latitude": meetingLatitude,
     "meeting_longitude": meetingLongitude,
   };
+}
+
+String _normalizeStatus(dynamic value) {
+  if (value == null) return "";
+  final raw = value.toString().toLowerCase();
+  if (raw == "1" || raw == "yes" || raw == "true") return "yes";
+  return "no";
 }
