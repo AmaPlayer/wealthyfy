@@ -11,6 +11,7 @@ import 'package:new_version_plus/new_version_plus.dart';
 import 'package:workmanager/workmanager.dart'; // Added for background tasks
 import '../../APIs/user_data.dart';
 import '../../Models/dashboard_approvedmeeting_model.dart';
+import '../../Models/usermeeting_List_model.dart';
 import '../../Models/yesterday_user_attendance_model.dart';
 import '../../controller/dashboardcontroller.dart';
 import '../Models/profile_model.dart';
@@ -27,6 +28,7 @@ class HomeTabController extends GetxController {
   RxBool isMeetingCheckLoading = false.obs;
   RxBool isOutSelect = false.obs;
   var upCheckButtonMap = <String, bool>{}.obs;
+  var meetingCheckOutButtonMap = <String, bool>{}.obs;
   var selectedLocation = "".obs;
   RxBool mutualFundSelected = false.obs;
   RxBool fixedDepositSelected = false.obs;
@@ -48,10 +50,13 @@ class HomeTabController extends GetxController {
   var defaultUserLat, defaultUserLong;
   RxList<MyProfileDatum> profileData = <MyProfileDatum>[].obs;
   var meetingLoadingMap = <String, bool>{}.obs;
+  var meetingCheckOutLoadingMap = <String, bool>{}.obs;
   RxString selectedSlot = ''.obs;
   RxList<String> timeSlots = <String>[].obs;
   RxString selectedStartTime = ''.obs;
   RxString selectedEndTime = ''.obs;
+  RxList<MeetingDatum> incompleteMeetingList = <MeetingDatum>[].obs;
+  RxBool isIncompleteMeetingLoading = false.obs;
 
 
   void generateTimeSlots({int intervalMinutes = 60}) {
@@ -74,6 +79,7 @@ class HomeTabController extends GetxController {
     initiateProfileApi();
     initiatUserAttendanceData();
     getUpcomingMeetingData();
+    refreshIncompleteMeetings();
     generateTimeSlots();
     checkForUpdate();
   }
@@ -350,6 +356,101 @@ class HomeTabController extends GetxController {
       meetingLoadingMap[tblMeetingId] = false;
     }
   }
+
+  Future<void> initiateMeetingCheckOutData(String tblMeetingId) async {
+    meetingCheckOutLoadingMap[tblMeetingId] = true;
+    try {
+      final permission = await Geolocator.checkPermission();
+      if (permission != LocationPermission.always) {
+        meetingCheckOutLoadingMap[tblMeetingId] = false;
+        Get.dialog(
+          AlertDialog(
+            title: const Text("Location Permission Required"),
+            content: const Text(
+              "Please set location permission to 'Always allow' to check out.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Get.back(),
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () async {
+                  await Geolocator.openLocationSettings();
+                  Get.back();
+                },
+                child: const Text("Open Settings"),
+              ),
+            ],
+          ),
+          barrierDismissible: false,
+        );
+        return;
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      );
+      defaultUserLat = position.latitude.toString();
+      defaultUserLong = position.longitude.toString();
+
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        String fullAddress =
+            "${place.name ?? ''}, "
+            "${place.street ?? ''}, "
+            "${place.subLocality ?? ''}, "
+            "${place.locality ?? ''}, "
+            "${place.subAdministrativeArea ?? ''}, "
+            "${place.administrativeArea ?? ''}, "
+            "${place.postalCode ?? ''}, "
+            "${place.country ?? ''}";
+
+        userFullAddress = fullAddress.trim().replaceAll(RegExp(r'\s+,'), '');
+      }
+
+      var hashMap = {
+        "tbl_user_id": viewLoginDetail!.data.first.tblUserId.toString(),
+        "tbl_office_id": viewLoginDetail!.data.first.tblOfficeId.toString(),
+        "tbl_meeting_id": tblMeetingId.toString(),
+        "meeting_check_out_latitude": defaultUserLat,
+        "meeting_check_out_longitude": defaultUserLong,
+        "meeting_check_out_full_address": userFullAddress,
+      };
+
+      var onValue = await meetingCheckOutApi(hashMap);
+      if (onValue.status) {
+        showSuccessBottomSheet(onValue.message.toString());
+        meetingCheckOutButtonMap[tblMeetingId] = true;
+        for (final meeting in dashboardApprovedMeetingList) {
+          if (meeting.tblMeetingId == tblMeetingId) {
+            meeting.meetingCheckOutStatus = "yes";
+            break;
+          }
+        }
+        dashboardApprovedMeetingList.refresh();
+        for (final meeting in incompleteMeetingList) {
+          if (meeting.tblMeetingId == tblMeetingId) {
+            meeting.meetingCheckOutStatus = "yes";
+            break;
+          }
+        }
+        incompleteMeetingList.refresh();
+      } else {
+        showErrorBottomSheet(onValue.message.toString());
+      }
+    } catch (error) {
+      print("Error in initiateMeetingCheckOutData: $error");
+    } finally {
+      meetingCheckOutLoadingMap[tblMeetingId] = false;
+    }
+  }
     void toggleMutualFund() {
     mutualFundSelected.value = !mutualFundSelected.value;
   }
@@ -457,6 +558,43 @@ class HomeTabController extends GetxController {
     }else{
 
       initiatCheckInData(defaultUserLat,defaultUserLong);
+    }
+  }
+
+  bool _isWithinOneMonth(String meetingDate) {
+    try {
+      final meetingDay = DateFormat('dd-MM-yyyy').parseStrict(meetingDate);
+      final now = DateTime.now();
+      final diffDays = now.difference(meetingDay).inDays;
+      return diffDays >= 0 && diffDays <= 30;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<void> refreshIncompleteMeetings() async {
+    isIncompleteMeetingLoading.value = true;
+    try {
+      var hashMap = {
+        "tbl_user_id": viewLoginDetail!.data.first.tblUserId.toString(),
+        "type": "my_meeting",
+      };
+
+      var onValue = await createMeetingListApi(hashMap);
+      if (onValue.status) {
+        UserMeetingListModel model = onValue.data;
+        final filtered = model.data.where((meeting) {
+          final minutesEmpty = meeting.meetingMinutes.trim().isEmpty;
+          return minutesEmpty && _isWithinOneMonth(meeting.meetingDate);
+        }).toList();
+        incompleteMeetingList.value = filtered;
+      } else {
+        incompleteMeetingList.clear();
+      }
+    } catch (error) {
+      print("ERROR_INCOMPLETE_MEETINGS=>$error");
+    } finally {
+      isIncompleteMeetingLoading.value = false;
     }
   }
 

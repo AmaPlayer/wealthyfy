@@ -70,6 +70,10 @@ class MeetingDatum {
   String meetingDate;
   String meetingTime;
   String meetingCheckInStatus;
+  String meetingCheckOutStatus;
+  String meetingCheckOutDateTime;
+  String meetingCheckOutFullAddress;
+  String meetingMinutes;
 
   MeetingDatum({
     required this.tblMeetingId,
@@ -109,6 +113,10 @@ class MeetingDatum {
     required this.meetingDate,
     required this.meetingTime,
     required this.meetingCheckInStatus,
+    required this.meetingCheckOutStatus,
+    required this.meetingCheckOutDateTime,
+    required this.meetingCheckOutFullAddress,
+    required this.meetingMinutes,
   });
 
   factory MeetingDatum.fromJson(Map<String, dynamic> json) => MeetingDatum(
@@ -149,6 +157,10 @@ class MeetingDatum {
     meetingDate: json["meeting_date"],
     meetingTime: json["meeting_time"],
     meetingCheckInStatus: json["meeting_check_in_status"]!,
+    meetingCheckOutStatus: json["meeting_check_out_status"] ?? "",
+    meetingCheckOutDateTime: json["meeting_check_out_date_time"] ?? "",
+    meetingCheckOutFullAddress: json["meeting_check_out_full_address"] ?? "",
+    meetingMinutes: json["meeting_minutes"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -189,6 +201,9 @@ class MeetingDatum {
     "meeting_date": meetingDate,
     "meeting_time": meetingTime,
     "meeting_check_in_status": meetingCheckInStatus,
+    "meeting_check_out_status": meetingCheckOutStatus,
+    "meeting_check_out_date_time": meetingCheckOutDateTime,
+    "meeting_check_out_full_address": meetingCheckOutFullAddress,
+    "meeting_minutes": meetingMinutes,
   };
 }
-

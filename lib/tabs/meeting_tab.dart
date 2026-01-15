@@ -7,6 +7,7 @@ import 'package:meeting/helper/colors.dart';
 import 'package:meeting/controller/button_controller/custombuttom.dart';
 import 'package:meeting/helper/textview.dart';
 import 'package:meeting/screens/notification_sreen.dart';
+import 'package:meeting/screens/meeting_minutes_screen.dart';
 
 class MeetingTab extends GetView<HomeTabController> {
   const MeetingTab({super.key});
@@ -21,129 +22,37 @@ class MeetingTab extends GetView<HomeTabController> {
         }
         //Allow the default back button behavior
       },
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          title: headingText(title: 'Create Meeting'),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Get.to(NotificationSreen());
-                },
-                icon: const Icon(Icons.notifications_active)),
-          ],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.only(
-            left: 8,
-            right: 8,
-          ),
-          child: SingleChildScrollView(
-            child: Form(
-              key: controller.formkey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  addPadding(15, 0),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: ColorConstants.GREY4COLOR,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: ColorConstants.GREYCOLOR),
-                    ),
-                    child: headingFullText(
-                      title: "Note: Please allow location permission as 'always allow' before check-in to ensure meeting approval.",
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: ColorConstants.BLACKCOLOR,
-                    ),
-                  ),
-                  addPadding(10, 0),
-                  headingText(
-                    title: 'Customer Information',
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: ColorConstants.BLACKCOLOR,
-                  ),
-                  addPadding(15, 0),
-                  _customerinformation1(context),
-                  addPadding(15, 0),
-                  _customerinformation2(),
-                  addPadding(15, 0),
-                  headingText(
-                    title: 'products',
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: ColorConstants.BLACKCOLOR,
-                  ),
-                  addPadding(15, 0),
-                  products1(),
-                  addPadding(15, 0),
-                  products2(),
-                  addPadding(15, 0),
-                  Row(
-                    children: [
-                      InkWell(
-                        onTap: controller.containerselect,
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 10),
-                          height: 25,
-                          width: 25,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: controller.isSelected.value
-                                      ? ColorConstants.GREENCOLOR
-                                      : ColorConstants.GREYCOLOR),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: Center(
-                              child: InkWell(
-                                  onTap: controller.containerselect,
-                                  child: Icon(
-                                    Icons.check,
-                                    size: 20,
-                                    color: controller.isSelected.value
-                                        ? ColorConstants.GREENCOLOR
-                                        : ColorConstants.WHITECOLOR,
-                                  ))),
-                        ),
-                      ),
-                      Flexible(
-                          child: headingFullText(
-                            title: 'Disclaimer: I have checked the ledger'
-                                ' details and answer of transactions shown',
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: ColorConstants.BLACKCOLOR,
-                          )),
-                    ],
-                  ),
-                  addPadding(15, 0),
-                  Center(
-                    child: CustomButton(
-                      text: 'Submit',
-                      onPressed: () {
-                        if (controller.formkey.currentState!.validate() && controller.isSelected.value) {
-                          if(controller.selectedStartTime.toString()!=""){
-                            controller.initiateCreateMeetingData();
-                          }else{
-                            showErrorBottomSheet("Please select slot");
-                          }
-
-                        }
-                      },
-                      width: 150,
-                      color: controller.isSelected.value
-                          ? ColorConstants.DarkMahroon
-                          : ColorConstants.GREYCOLOR,
-                    ),
-                  ),
-                  addPadding(15, 0),
-                ],
-              ),
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+            title: headingText(title: 'Meetings'),
+            bottom: TabBar(
+              onTap: (index) {
+                if (index == 1) {
+                  controller.refreshIncompleteMeetings();
+                }
+              },
+              tabs: const [
+                Tab(text: 'Create'),
+                Tab(text: 'Incomplete'),
+              ],
             ),
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    Get.to(NotificationSreen());
+                  },
+                  icon: const Icon(Icons.notifications_active)),
+            ],
+          ),
+          body: TabBarView(
+            children: [
+              _createMeetingTab(context),
+              _incompleteMeetingsTab(),
+            ],
           ),
         ),
       ),
@@ -1057,4 +966,208 @@ class MeetingTab extends GetView<HomeTabController> {
               ],
             )),
       ]);
+
+  Widget _createMeetingTab(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 8,
+        right: 8,
+      ),
+      child: SingleChildScrollView(
+        child: Form(
+          key: controller.formkey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              addPadding(15, 0),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: ColorConstants.GREY4COLOR,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: ColorConstants.GREYCOLOR),
+                ),
+                child: headingFullText(
+                  title: "Note: Please allow location permission as 'always allow' before check-in to ensure meeting approval.",
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: ColorConstants.BLACKCOLOR,
+                ),
+              ),
+              addPadding(10, 0),
+              headingText(
+                title: 'Customer Information',
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: ColorConstants.BLACKCOLOR,
+              ),
+              addPadding(15, 0),
+              _customerinformation1(context),
+              addPadding(15, 0),
+              _customerinformation2(),
+              addPadding(15, 0),
+              headingText(
+                title: 'products',
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: ColorConstants.BLACKCOLOR,
+              ),
+              addPadding(15, 0),
+              products1(),
+              addPadding(15, 0),
+              products2(),
+              addPadding(15, 0),
+              Row(
+                children: [
+                  InkWell(
+                    onTap: controller.containerselect,
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 10),
+                      height: 25,
+                      width: 25,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: controller.isSelected.value
+                                  ? ColorConstants.GREENCOLOR
+                                  : ColorConstants.GREYCOLOR),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Center(
+                          child: InkWell(
+                              onTap: controller.containerselect,
+                              child: Icon(
+                                Icons.check,
+                                size: 20,
+                                color: controller.isSelected.value
+                                    ? ColorConstants.GREENCOLOR
+                                    : ColorConstants.WHITECOLOR,
+                              ))),
+                    ),
+                  ),
+                  Flexible(
+                      child: headingFullText(
+                        title: 'Disclaimer: I have checked the ledger'
+                            ' details and answer of transactions shown',
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: ColorConstants.BLACKCOLOR,
+                      )),
+                ],
+              ),
+              addPadding(15, 0),
+              Center(
+                child: CustomButton(
+                  text: 'Submit',
+                  onPressed: () {
+                    if (controller.formkey.currentState!.validate() && controller.isSelected.value) {
+                      if(controller.selectedStartTime.toString()!=""){
+                        controller.initiateCreateMeetingData();
+                      }else{
+                        showErrorBottomSheet("Please select slot");
+                      }
+
+                    }
+                  },
+                  width: 150,
+                  color: controller.isSelected.value
+                      ? ColorConstants.DarkMahroon
+                      : ColorConstants.GREYCOLOR,
+                ),
+              ),
+              addPadding(15, 0),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _incompleteMeetingsTab() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
+      child: Obx(() {
+        if (controller.isIncompleteMeetingLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (controller.incompleteMeetingList.isEmpty) {
+          return Center(
+            child: headingText(
+              title: 'No incomplete meetings found.',
+              color: ColorConstants.GREYCOLOR,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          );
+        }
+
+        return ListView.builder(
+          itemCount: controller.incompleteMeetingList.length,
+          itemBuilder: (context, index) {
+            final meeting = controller.incompleteMeetingList[index];
+            final hasCheckedOut = meeting.meetingCheckOutStatus == "yes";
+            final hasCheckedIn = meeting.meetingCheckInStatus == "yes";
+
+            return Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: ColorConstants.WHITECOLOR,
+                border: Border.all(color: ColorConstants.DarkMahroon),
+                boxShadow: const [BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  headingText(
+                    title: meeting.clientName,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: ColorConstants.BLACKCOLOR,
+                  ),
+                  addPadding(5, 0),
+                  headingText(
+                    title: '${meeting.meetingDate}  ${meeting.meetingTime}',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: ColorConstants.GREYCOLOR,
+                  ),
+                  addPadding(10, 0),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: hasCheckedOut
+                        ? CustomButton(
+                            text: 'Complete',
+                            onPressed: () {
+                              Get.to(MeetingMinutesScreen(
+                                tblMeetingId: meeting.tblMeetingId,
+                                meetingDate: meeting.meetingDate,
+                                initialMinutes: meeting.meetingMinutes,
+                              ));
+                            },
+                            color: ColorConstants.DarkMahroon,
+                            width: 120,
+                          )
+                        : CustomButton(
+                            text: 'Check Out',
+                            onPressed: () {
+                              if (!hasCheckedIn) {
+                                showErrorBottomSheet("Please check in before check out.");
+                                return;
+                              }
+                              controller.initiateMeetingCheckOutData(meeting.tblMeetingId);
+                            },
+                            color: ColorConstants.REDCOLOR,
+                            width: 120,
+                          ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      }),
+    );
+  }
 }

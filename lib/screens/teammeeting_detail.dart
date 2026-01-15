@@ -32,6 +32,7 @@ class _PersonDetailState extends State<PersonDetail> {
  print("check tab index${widget.tabPosition}");
     initiateMeetingDeTail();
   }
+
   @override
   Widget build(BuildContext context) {
     return isLoading
@@ -585,6 +586,7 @@ class _PersonDetailState extends State<PersonDetail> {
         ),
       );
 
+
   initiateMeetingDeTail() {
     //isLoading = true;
     var hashMap = {
@@ -606,6 +608,7 @@ class _PersonDetailState extends State<PersonDetail> {
       });
     });
   }
+
   Future<void> _openMap(String address) async {
     final query = Uri.encodeComponent(address);
     final googleUrl = 'https://www.google.com/maps/search/?api=1&query=$query';

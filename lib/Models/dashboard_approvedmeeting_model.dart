@@ -61,6 +61,8 @@ class DasApprovedMeetingDatum {
   String approvedByUserDate;
   String approvedByUserTime;
   String meetingCheckInStatus;
+  String meetingCheckOutStatus;
+  String meetingCheckOutDateTime;
 
   DasApprovedMeetingDatum({
     required this.tblMeetingId,
@@ -94,6 +96,8 @@ class DasApprovedMeetingDatum {
     required this.approvedByUserDate,
     required this.approvedByUserTime,
     required this.meetingCheckInStatus,
+    required this.meetingCheckOutStatus,
+    required this.meetingCheckOutDateTime,
 
   });
 
@@ -129,6 +133,8 @@ class DasApprovedMeetingDatum {
     approvedByUserDate: json["approved_by_user_date"],
     approvedByUserTime: json["approved_by_user_time"],
     meetingCheckInStatus: json["meeting_check_in_status"],
+    meetingCheckOutStatus: json["meeting_check_out_status"] ?? "",
+    meetingCheckOutDateTime: json["meeting_check_out_date_time"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -163,5 +169,7 @@ class DasApprovedMeetingDatum {
     "approved_by_user_date": approvedByUserDate,
     "approved_by_user_time": approvedByUserTime,
     "meeting_check_in_status": meetingCheckInStatus,
+    "meeting_check_out_status": meetingCheckOutStatus,
+    "meeting_check_out_date_time": meetingCheckOutDateTime,
   };
 }

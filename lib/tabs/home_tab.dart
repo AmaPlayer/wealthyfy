@@ -891,72 +891,114 @@ class HomeTab extends GetView<HomeTabController> {
                             ),
                           ],
                         ),
-                        subtitle: Row(
-                          children: [
-                            headingFullText(
-                              title: '${controller.dashboardApprovedMeetingList.first.clientName} \n'
-                                  '${controller.dashboardApprovedMeetingList.first.meetingDate} \n'
-                                  '${controller.dashboardApprovedMeetingList.first.meetingTime}',
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            Spacer(),
-                            controller.upCheckButtonMap[controller.dashboardApprovedMeetingList.first.tblMeetingId] ==
-                                    true
-                                ? Image.asset(
-                                    location,
-                                    height: 50,
-                                  ).paddingOnly(right: 50)
-                                : controller.dashboardApprovedMeetingList.first.meetingCheckInStatus == "yes"
-                                    ? Image.asset(
-                                        location,
-                                        height: 50,
-                                      ).paddingOnly(right: 50)
-                                    : InkWell(
+                        subtitle: Builder(
+                          builder: (_) {
+                            final meetingId = controller.dashboardApprovedMeetingList.first.tblMeetingId;
+                            final hasCheckedIn =
+                                controller.upCheckButtonMap[meetingId] == true ||
+                                controller.dashboardApprovedMeetingList.first.meetingCheckInStatus == "yes";
+                            final hasCheckedOut =
+                                controller.meetingCheckOutButtonMap[meetingId] == true ||
+                                controller.dashboardApprovedMeetingList.first.meetingCheckOutStatus == "yes";
+
+                            return Row(
+                              children: [
+                                headingFullText(
+                                  title: '${controller.dashboardApprovedMeetingList.first.clientName} \n'
+                                      '${controller.dashboardApprovedMeetingList.first.meetingDate} \n'
+                                      '${controller.dashboardApprovedMeetingList.first.meetingTime}',
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                Spacer(),
+                                !hasCheckedIn
+                                    ? InkWell(
                                         onTap: () {
-                                          // Set loading state for the specific meeting ID
-                                          controller.meetingLoadingMap[
-                                              controller.dashboardApprovedMeetingList.first.tblMeetingId] = true;
-                                         //controller.getLocation();
-                                          controller.initiateCheckMeetingData(
-                                              controller.dashboardApprovedMeetingList.first.tblMeetingId);
+                                          controller.meetingLoadingMap[meetingId] = true;
+                                          controller.initiateCheckMeetingData(meetingId);
                                         },
-                                        child: Obx(() => controller.meetingLoadingMap[
-                                                    controller.dashboardApprovedMeetingList.first.tblMeetingId] ==
-                                                true
-                                            ? SizedBox(
-                                                height: 50,
-                                                width: 50,
-                                                child: CircularProgressIndicator(
-                                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                                    ColorConstants.GREENCOLOR,
+                                        child: Obx(
+                                          () => controller.meetingLoadingMap[meetingId] == true
+                                              ? SizedBox(
+                                                  height: 50,
+                                                  width: 50,
+                                                  child: CircularProgressIndicator(
+                                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                                      ColorConstants.GREENCOLOR,
+                                                    ),
                                                   ),
-                                                ),
-                                              )
-                                            : Container(
-                                          alignment: Alignment.center,
-                                                padding: const EdgeInsets.all(5),
-                                                height: 50,
-                                                width: 50,
-                                                decoration: BoxDecoration(
-                                                  color: ColorConstants.WHITECOLOR,
-                                                  boxShadow: const [
-                                                    BoxShadow(blurRadius: 5, color: Colors.white),
-                                                  ],
-                                                  borderRadius: BorderRadius.circular(30),
-                                                ),
-                                                child: headingFullText(
-                                                  title: 'Check\n in',
-                                                  align: TextAlign.center,
-                                                  color: ColorConstants.DarkMahroon,
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ).paddingOnly(right: 0)),
-                                      ),
-                          ],
-                        ).paddingOnly(top: 20),
+                                                )
+                                              : Container(
+                                                  alignment: Alignment.center,
+                                                  padding: const EdgeInsets.all(5),
+                                                  height: 50,
+                                                  width: 50,
+                                                  decoration: BoxDecoration(
+                                                    color: ColorConstants.WHITECOLOR,
+                                                    boxShadow: const [
+                                                      BoxShadow(blurRadius: 5, color: Colors.white),
+                                                    ],
+                                                    borderRadius: BorderRadius.circular(30),
+                                                  ),
+                                                  child: headingFullText(
+                                                    title: 'Check\n in',
+                                                    align: TextAlign.center,
+                                                    color: ColorConstants.DarkMahroon,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ).paddingOnly(right: 0),
+                                        ),
+                                      )
+                                    : !hasCheckedOut
+                                        ? InkWell(
+                                            onTap: () {
+                                              controller.meetingCheckOutLoadingMap[meetingId] = true;
+                                              controller.initiateMeetingCheckOutData(meetingId);
+                                            },
+                                            child: Obx(
+                                              () => controller.meetingCheckOutLoadingMap[meetingId] == true
+                                                  ? SizedBox(
+                                                      height: 50,
+                                                      width: 50,
+                                                      child: CircularProgressIndicator(
+                                                        valueColor: AlwaysStoppedAnimation<Color>(
+                                                          ColorConstants.REDCOLOR,
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : Container(
+                                                      alignment: Alignment.center,
+                                                      padding: const EdgeInsets.all(5),
+                                                      height: 50,
+                                                      width: 50,
+                                                      decoration: BoxDecoration(
+                                                        color: ColorConstants.WHITECOLOR,
+                                                        boxShadow: const [
+                                                          BoxShadow(blurRadius: 5, color: Colors.white),
+                                                        ],
+                                                        borderRadius: BorderRadius.circular(30),
+                                                      ),
+                                                      child: headingFullText(
+                                                        title: 'Check\n out',
+                                                        align: TextAlign.center,
+                                                        color: ColorConstants.REDCOLOR,
+                                                        fontSize: 10,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                            ),
+                                          )
+                                        : Icon(
+                                            Icons.check_circle,
+                                            color: ColorConstants.REDCOLOR,
+                                            size: 50,
+                                          ).paddingOnly(right: 10),
+                              ],
+                            ).paddingOnly(top: 20);
+                          },
+                        ),
                         showTrailingIcon: false,
                         children: [
                           Padding(
@@ -973,7 +1015,13 @@ class HomeTab extends GetView<HomeTabController> {
                                       return SizedBox();
                                     }
 
-                                    return Obx(() => Row(
+                                    return Obx(() {
+                                      final meetingId = data.tblMeetingId;
+                                      final hasCheckedIn = controller.upCheckButtonMap[meetingId] == true || data.meetingCheckInStatus == "yes";
+                                      final hasCheckedOut =
+                                          controller.meetingCheckOutButtonMap[meetingId] == true || data.meetingCheckOutStatus == "yes";
+
+                                      return Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Column(
@@ -1002,33 +1050,61 @@ class HomeTab extends GetView<HomeTabController> {
                                                 addPadding(3, 0),
                                               ],
                                             ),
-                                            controller.upCheckButtonMap[data.tblMeetingId] == true
-                                                ? Image.asset(
-                                                    location,
-                                                    height: 50,
+                                            !hasCheckedIn
+                                                ? InkWell(
+                                                    onTap: () {
+                                                      controller.meetingLoadingMap[meetingId] = true;
+                                                      controller.initiateCheckMeetingData(meetingId);
+                                                    },
+                                                    child: controller.meetingLoadingMap[meetingId] == true
+                                                        ? SizedBox(
+                                                            height: 40,
+                                                            width: 40,
+                                                            child: CircularProgressIndicator(
+                                                              valueColor: AlwaysStoppedAnimation<Color>(
+                                                                ColorConstants.WHITECOLOR,
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : Container(
+                                                            alignment: Alignment.center,
+                                                            padding: const EdgeInsets.all(5),
+                                                            height: 50,
+                                                            width: 50,
+                                                            decoration: BoxDecoration(
+                                                              color: ColorConstants.WHITECOLOR,
+                                                              boxShadow: const [
+                                                                BoxShadow(blurRadius: 5, color: Colors.white),
+                                                              ],
+                                                              borderRadius: BorderRadius.circular(30),
+                                                            ),
+                                                            child: headingFullText(
+                                                              title: 'Check\n in',
+                                                              align: TextAlign.center,
+                                                              color: ColorConstants.DarkMahroon,
+                                                              fontSize: 10,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
                                                   )
-                                                : data.meetingCheckInStatus == "yes"
-                                                    ? Image.asset(
-                                                        location,
-                                                        height: 50,
-                                                      )
-                                                    : InkWell(
+                                                : !hasCheckedOut
+                                                    ? InkWell(
                                                         onTap: () {
-                                                          controller.meetingLoadingMap[data.tblMeetingId] = true;
-                                                          controller.initiateCheckMeetingData(data.tblMeetingId);
+                                                          controller.meetingCheckOutLoadingMap[meetingId] = true;
+                                                          controller.initiateMeetingCheckOutData(meetingId);
                                                         },
-                                                        child: controller.meetingLoadingMap[data.tblMeetingId] == true
+                                                        child: controller.meetingCheckOutLoadingMap[meetingId] == true
                                                             ? SizedBox(
                                                                 height: 40,
                                                                 width: 40,
                                                                 child: CircularProgressIndicator(
                                                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                                                    ColorConstants.WHITECOLOR,
+                                                                    ColorConstants.REDCOLOR,
                                                                   ),
                                                                 ),
                                                               )
                                                             : Container(
-                                                          alignment: Alignment.center,
+                                                                alignment: Alignment.center,
                                                                 padding: const EdgeInsets.all(5),
                                                                 height: 50,
                                                                 width: 50,
@@ -1040,16 +1116,22 @@ class HomeTab extends GetView<HomeTabController> {
                                                                   borderRadius: BorderRadius.circular(30),
                                                                 ),
                                                                 child: headingFullText(
-                                                                  title: 'Check\n in',
+                                                                  title: 'Check\n out',
                                                                   align: TextAlign.center,
-                                                                  color: ColorConstants.DarkMahroon,
+                                                                  color: ColorConstants.REDCOLOR,
                                                                   fontSize: 10,
                                                                   fontWeight: FontWeight.bold,
                                                                 ),
                                                               ),
+                                                      )
+                                                    : Icon(
+                                                        Icons.check_circle,
+                                                        color: ColorConstants.REDCOLOR,
+                                                        size: 40,
                                                       ),
                                           ],
-                                        ).paddingOnly(top: 10, left: 10, right: 10));
+                                        ).paddingOnly(top: 10, left: 10, right: 10);
+                                    });
                                   })),
                         ]))
               ])),

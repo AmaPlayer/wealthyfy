@@ -61,6 +61,12 @@ class MeetingDetailDatum {
   String fullAddress;
   String meetingCheckInStatus;
   String meetingCheckInDateTime;
+  String meetingCheckOutStatus;
+  String meetingCheckOutDateTime;
+  String meetingCheckOutFullAddress;
+  String meetingCheckOutLatitude;
+  String meetingCheckOutLongitude;
+  String meetingMinutes;
   String meetingTimeSlotFrom;
   String meetingTimeSlotTo;
   String meetingLatitude;
@@ -98,6 +104,12 @@ class MeetingDetailDatum {
     required this.meetingCheckInFullAddress,
     required this.meetingCheckInStatus,
     required this.meetingCheckInDateTime,
+    required this.meetingCheckOutStatus,
+    required this.meetingCheckOutDateTime,
+    required this.meetingCheckOutFullAddress,
+    required this.meetingCheckOutLatitude,
+    required this.meetingCheckOutLongitude,
+    required this.meetingMinutes,
     required this.meetingTimeSlotFrom,
     required this.meetingTimeSlotTo,
     required this.meetingLatitude,
@@ -136,6 +148,12 @@ class MeetingDetailDatum {
     meetingCheckInFullAddress: json["meeting_check_in_full_address"],
     meetingCheckInStatus: json["meeting_check_in_status"],
     meetingCheckInDateTime: json["meeting_check_in_date_time"],
+    meetingCheckOutStatus: json["meeting_check_out_status"] ?? "",
+    meetingCheckOutDateTime: json["meeting_check_out_date_time"] ?? "",
+    meetingCheckOutFullAddress: json["meeting_check_out_full_address"] ?? "",
+    meetingCheckOutLatitude: json["meeting_check_out_latitude"] ?? "",
+    meetingCheckOutLongitude: json["meeting_check_out_longitude"] ?? "",
+    meetingMinutes: json["meeting_minutes"] ?? "",
     meetingTimeSlotFrom: json["meeting_time_slot_from"],
     meetingTimeSlotTo: json["meeting_time_slot_to"],
     meetingLatitude: json["meeting_latitude"],
@@ -174,6 +192,12 @@ class MeetingDetailDatum {
     "meeting_check_in_full_address": meetingCheckInFullAddress,
     "meeting_check_in_status": meetingCheckInStatus,
     "meeting_check_in_date_time": meetingCheckInDateTime,
+    "meeting_check_out_status": meetingCheckOutStatus,
+    "meeting_check_out_date_time": meetingCheckOutDateTime,
+    "meeting_check_out_full_address": meetingCheckOutFullAddress,
+    "meeting_check_out_latitude": meetingCheckOutLatitude,
+    "meeting_check_out_longitude": meetingCheckOutLongitude,
+    "meeting_minutes": meetingMinutes,
     "meeting_time_slot_from": meetingTimeSlotFrom,
     "meeting_time_slot_to": meetingTimeSlotTo,
     "meeting_latitude": meetingLatitude,

@@ -46,6 +46,8 @@ String yesterdayUserAttendanceUrl  = "${BaseUrl}attendance/yesterday_user_attend
 String dashboardApprovedMeetingUrl = "${BaseUrl}meeting_data/user_dashboard_approved_meeting_api";
 String notificationUrl = "${BaseUrl}notification_data/notification_list_API";
 String meetingCheckInUrl = "${BaseUrl}meeting_data/meeting_check_in_api";
+String meetingCheckOutUrl = "${BaseUrl}meeting_data/meeting_check_out_api";
+String meetingMinutesUrl = "${BaseUrl}meeting_data/meeting_minutes_api";
 String meetingPermissionCheckUrl = "${BaseUrl}permission-check";
 String meetingFakeCheckUrl = "${BaseUrl}meeting_data/fake_meeting_api";
 String leaveApproveRejectUlr = "${BaseUrl}attendance/leave_reject_approved_API";
@@ -417,6 +419,36 @@ Future<APIResponse> meetingCheckInApi (Map<String,dynamic>hashmap)async{
     }
   }catch(error){
     print(("CHECK_IN_MEETING"));
+    return APIResponse(message: error.toString(), status: false);
+  }
+}
+
+Future<APIResponse> meetingCheckOutApi(Map<String, dynamic> hashmap) async {
+  try {
+    final response = await http.post(Uri.parse(meetingCheckOutUrl), body: hashmap);
+    final data = jsonDecode(response.body);
+    if (data["status"]) {
+      return APIResponse(message: data["message"], status: true);
+    } else {
+      return APIResponse(message: data["message"], status: false);
+    }
+  } catch (error) {
+    print("CHECK_OUT_MEETING");
+    return APIResponse(message: error.toString(), status: false);
+  }
+}
+
+Future<APIResponse> meetingMinutesApi(Map<String, dynamic> hashmap) async {
+  try {
+    final response = await http.post(Uri.parse(meetingMinutesUrl), body: hashmap);
+    final data = jsonDecode(response.body);
+    if (data["status"]) {
+      return APIResponse(message: data["message"], status: true);
+    } else {
+      return APIResponse(message: data["message"], status: false);
+    }
+  } catch (error) {
+    print("MEETING_MINUTES");
     return APIResponse(message: error.toString(), status: false);
   }
 }
