@@ -94,6 +94,9 @@ class _WorkingsheetScreenState extends State<WorkingsheetScreen> {
   }
   Future<void> generateAttendanceExcel(List<teamAttDatum> teamAttendanceList) async {
     try {
+      CellValue cellValue(Object? value) =>
+          TextCellValue(value?.toString() ?? '');
+
       // 1. Create a new Excel file
       var excel = Excel.createExcel();
       Sheet sheetObject = excel['Team Attendance'];
@@ -109,7 +112,7 @@ class _WorkingsheetScreenState extends State<WorkingsheetScreen> {
         'Late',
         'Status',
       ];
-      sheetObject.appendRow(headers);
+      sheetObject.appendRow(headers.map(cellValue).toList());
 
        // Group by Employee ID to handle missing dates per employee
       Map<String, List<teamAttDatum>> employeeMap = {};
@@ -163,7 +166,7 @@ class _WorkingsheetScreenState extends State<WorkingsheetScreen> {
               record.workingTime ?? 'N/A',
               record.isLate ?? 'N/A',
               record.status ?? 'N/A',
-            ]);
+            ].map(cellValue).toList());
           } else {
             // Add Absent row
              sheetObject.appendRow([
@@ -176,7 +179,7 @@ class _WorkingsheetScreenState extends State<WorkingsheetScreen> {
               '00:00',
               'N/A',
               'Absent',
-            ]);
+            ].map(cellValue).toList());
           }
         }
       }
@@ -201,7 +204,10 @@ class _WorkingsheetScreenState extends State<WorkingsheetScreen> {
       await file.writeAsBytes(bytes, flush: true);
 
       // 6. Share or notify user of the file
-      Share.shareXFiles([XFile(filePath)], text: 'Here is the Team Attendance Data');
+      SharePlus.instance.share(ShareParams(
+        files: [XFile(filePath)],
+        text: 'Here is the Team Attendance Data',
+      ));
 
       // Show success message
       print('File saved at $filePath');

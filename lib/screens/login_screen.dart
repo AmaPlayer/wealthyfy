@@ -110,6 +110,9 @@ class _LoginScreenState extends State<LoginScreen> {
   _emailUi() => TextFormField(
     controller: emailController,
     keyboardType: TextInputType.emailAddress,
+    autofillHints: const <String>[],
+    autocorrect: false,
+    enableSuggestions: false,
     style: TextStyle(
         color: ColorConstants.GREY7COLOR,
         decorationColor: ColorConstants.WHITECOLOR),
@@ -140,6 +143,9 @@ class _LoginScreenState extends State<LoginScreen> {
     cursorColor: ColorConstants.DarkMahroon,
     controller: passwordController,
     obscureText: passwordAisible,
+    autofillHints: const <String>[],
+    autocorrect: false,
+    enableSuggestions: false,
     decoration: InputDecoration(
       border: const OutlineInputBorder(
         borderSide: BorderSide(

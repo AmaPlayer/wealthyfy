@@ -52,6 +52,9 @@ class _meetingListViewState extends State<meetingListView> {
 
   Future<void> generateMeetingExcel(List<MeetingDatum> meetingList) async {
     try {
+      CellValue cellValue(Object? value) =>
+          TextCellValue(value?.toString() ?? '');
+
       // 1. Create a new Excel file
       var excel = Excel.createExcel(); // Creates an empty Excel file
       Sheet sheetObject = excel['Meeting Data'];
@@ -96,7 +99,7 @@ class _meetingListViewState extends State<meetingListView> {
         'Meeting Time',
         'Check-In Status',
       ];
-      sheetObject.appendRow(headers);
+      sheetObject.appendRow(headers.map(cellValue).toList());
 
 // Add data rows
       for (var meeting in meetingList) {
@@ -138,7 +141,7 @@ class _meetingListViewState extends State<meetingListView> {
           meeting.meetingDate,
           meeting.meetingTime,
           meeting.meetingCheckInStatus,
-        ]);
+        ].map(cellValue).toList());
       }
 
 
@@ -162,7 +165,10 @@ class _meetingListViewState extends State<meetingListView> {
       await file.writeAsBytes(bytes, flush: true);
 
       // 6. Share or notify user of the file
-      Share.shareXFiles([XFile(filePath)], text: 'Here is the Meeting Data');
+      SharePlus.instance.share(ShareParams(
+        files: [XFile(filePath)],
+        text: 'Here is the Meeting Data',
+      ));
 
       // Show success message
       print('File saved at $filePath');

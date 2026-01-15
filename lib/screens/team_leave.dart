@@ -70,6 +70,9 @@ class _TeamLeaveState extends State<TeamLeave> {
 
   Future<void> generateMeetingExcel(List<UserApplyListDatum> userLeaveApplyList) async {
     try {
+      CellValue cellValue(Object? value) =>
+          TextCellValue(value?.toString() ?? '');
+
       // 1. Create a new Excel file
       var excel = Excel.createExcel(); // Creates an empty Excel file
       Sheet sheetObject = excel['Team Leave'];
@@ -86,7 +89,7 @@ class _TeamLeaveState extends State<TeamLeave> {
         'Status',
         'Reason',
       ];
-      sheetObject.appendRow(headers);
+      sheetObject.appendRow(headers.map(cellValue).toList());
 
       // 3. Add meeting data to the Excel sheet
       for (var leave in userLeaveApplyList) {
@@ -100,7 +103,7 @@ class _TeamLeaveState extends State<TeamLeave> {
           leave.leaveApplyTime,
           leave.status,
           leave.reason,
-        ]);
+        ].map(cellValue).toList());
       }
 
 
@@ -122,7 +125,10 @@ class _TeamLeaveState extends State<TeamLeave> {
       await file.writeAsBytes(bytes, flush: true);
 
 
-      Share.shareXFiles([XFile(filePath)], text: 'Here is the Team Leave Data');
+      SharePlus.instance.share(ShareParams(
+        files: [XFile(filePath)],
+        text: 'Here is the Team Leave Data',
+      ));
 
       // Show success message
       print('File saved at $filePath');

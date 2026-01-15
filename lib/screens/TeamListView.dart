@@ -56,6 +56,9 @@ class _TeamLisViewState extends State<TeamLisView> {
 
   Future<void> generateMeetingExcel(List<teamDatum> teamList) async {
     try {
+      CellValue cellValue(Object? value) =>
+          TextCellValue(value?.toString() ?? '');
+
       // 1. Create a new Excel file
       var excel = Excel.createExcel();
       Sheet sheetObject = excel['My Team Data'];
@@ -76,7 +79,7 @@ class _TeamLisViewState extends State<TeamLisView> {
         'Created Date',
         'Export Date' // Today's Date
       ];
-      sheetObject.appendRow(headers);
+      sheetObject.appendRow(headers.map(cellValue).toList());
 
       // 3. Add employee data to the Excel sheet
       for (var teamMember in teamList) {
@@ -94,7 +97,7 @@ class _TeamLisViewState extends State<TeamLisView> {
           teamMember.userImage,
           teamMember.createdDate,
           todayDate, // Adding today's date
-        ]);
+        ].map(cellValue).toList());
       }
 
       // 4. Save the Excel file
@@ -110,7 +113,10 @@ class _TeamLisViewState extends State<TeamLisView> {
       await file.writeAsBytes(bytes, flush: true);
 
       // 6. Share or notify user of the file
-      Share.shareXFiles([XFile(filePath)], text: 'Here is the Team Data');
+      SharePlus.instance.share(ShareParams(
+        files: [XFile(filePath)],
+        text: 'Here is the Team Data',
+      ));
       print('File saved at $filePath');
     } catch (e) {
       print('Error generating Excel file: $e');

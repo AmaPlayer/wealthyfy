@@ -417,6 +417,9 @@ class _LeaveScreenState extends State<LeaveScreen> {
 
   Future<void> generateMeetingExcel(List<UserApplyListDatum> userLeaveApplyList) async {
     try {
+      CellValue cellValue(Object? value) =>
+          TextCellValue(value?.toString() ?? '');
+
       // 1. Create a new Excel file
       var excel = Excel.createExcel(); // Creates an empty Excel file
       Sheet sheetObject = excel['Team Leave'];
@@ -433,7 +436,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
         'Status',
         'Reason',
       ];
-      sheetObject.appendRow(headers);
+      sheetObject.appendRow(headers.map(cellValue).toList());
 
       // 3. Add meeting data to the Excel sheet
       for (var leave in userLeaveApplyList) {
@@ -447,7 +450,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
           leave.leaveApplyTime,
           leave.status,
           leave.reason,
-        ]);
+        ].map(cellValue).toList());
       }
 
       for (var row in sheetObject.rows) {
@@ -463,7 +466,10 @@ class _LeaveScreenState extends State<LeaveScreen> {
       String filePath = '${directory.path}/TeamLeave.xlsx';
       File file = File(filePath);
       await file.writeAsBytes(bytes, flush: true);
-      Share.shareXFiles([XFile(filePath)], text: 'Here is the Team Leave Data');
+      SharePlus.instance.share(ShareParams(
+        files: [XFile(filePath)],
+        text: 'Here is the Team Leave Data',
+      ));
       print('File saved at $filePath');
     } catch (e) {
       print('Error generating Excel file: $e');
