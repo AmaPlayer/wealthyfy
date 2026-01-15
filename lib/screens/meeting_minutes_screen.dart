@@ -9,6 +9,7 @@ import 'package:meeting/controller/dashboardcontroller.dart';
 import 'package:meeting/helper/ErrorBottomSheet.dart';
 import 'package:meeting/helper/colors.dart';
 import 'package:meeting/helper/textview.dart';
+import 'package:meeting/Routes/bindings.dart';
 import 'package:meeting/screens/bottom_screen.dart';
 
 class MeetingMinutesScreen extends StatefulWidget {
@@ -89,7 +90,7 @@ class _MeetingMinutesScreenState extends State<MeetingMinutesScreen> {
         if (Get.isBottomSheetOpen ?? false) {
           Get.back();
         }
-        Get.offAll(() => MyBottomBar());
+        Get.offAll(() => MyBottomBar(), binding: DashBoardBinding());
         Future.delayed(const Duration(milliseconds: 100), () {
           if (Get.isRegistered<DashboardController>()) {
             Get.find<DashboardController>().onItemTapped(0);
