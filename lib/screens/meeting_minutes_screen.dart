@@ -86,8 +86,15 @@ class _MeetingMinutesScreenState extends State<MeetingMinutesScreen> {
       final controller = Get.find<HomeTabController>();
       controller.refreshIncompleteMeetings();
       if (mounted) {
-        Get.find<DashboardController>().onItemTapped(0);
-        Get.offAll(MyBottomBar());
+        if (Get.isBottomSheetOpen ?? false) {
+          Get.back();
+        }
+        Get.offAll(() => MyBottomBar());
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (Get.isRegistered<DashboardController>()) {
+            Get.find<DashboardController>().onItemTapped(0);
+          }
+        });
       }
     } else {
       showErrorBottomSheet(onValue.message);
