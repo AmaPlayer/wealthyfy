@@ -132,8 +132,8 @@ class DasApprovedMeetingDatum {
     approvedByUserType: json["approved_by_user_type"],
     approvedByUserDate: json["approved_by_user_date"],
     approvedByUserTime: json["approved_by_user_time"],
-    meetingCheckInStatus: json["meeting_check_in_status"],
-    meetingCheckOutStatus: json["meeting_check_out_status"] ?? "",
+    meetingCheckInStatus: json["meeting_check_in_status"]?.toString() ?? "",
+    meetingCheckOutStatus: json["meeting_check_out_status"]?.toString() ?? "",
     meetingCheckOutDateTime: json["meeting_check_out_date_time"] ?? "",
   );
 
