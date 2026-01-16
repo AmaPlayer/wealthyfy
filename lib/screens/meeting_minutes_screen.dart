@@ -130,11 +130,12 @@ class _MeetingMinutesScreenState extends State<MeetingMinutesScreen> {
                 border: Border.all(color: ColorConstants.GREYCOLOR),
               ),
               child: headingFullText(
-                title: "Note: Please fill minutes of meeting/agenda and benefit to company.",
+                title: "Note: Please fill minutes of meeting/agenda , benefit to company and networth.",
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: ColorConstants.BLACKCOLOR,
               ),
+              
             ),
             addPadding(15, 0),
             TextFormField(
