@@ -1149,6 +1149,7 @@ class MeetingTab extends GetView<HomeTabController> {
                                   tblMeetingId: meeting.tblMeetingId,
                                   meetingDate: meeting.meetingDate,
                                   initialMinutes: meeting.meetingMinutes,
+                                  initialHoldingValue: meeting.holdingValue,
                                 ));
                               },
                               color: ColorConstants.DarkMahroon,

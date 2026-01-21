@@ -65,6 +65,14 @@ class MeetingDatum {
   String approvedRejectByUserDate;
   String meetingCheckInDateTime;
   String meetingCheckInFullAddress;
+  String meetingCheckInLatitude;
+  String meetingCheckInLongitude;
+  String checkpoint1DateTime;
+  String checkpoint1Latitude;
+  String checkpoint1Longitude;
+  String checkpoint2DateTime;
+  String checkpoint2Latitude;
+  String checkpoint2Longitude;
   String meetingTimeSlotFrom;
   String meetingTimeSlotTo;
   String meetingDate;
@@ -74,6 +82,8 @@ class MeetingDatum {
   String meetingCheckOutDateTime;
   String meetingCheckOutFullAddress;
   String meetingMinutes;
+  String meetingAgenda;
+  String holdingValue;
 
   MeetingDatum({
     required this.tblMeetingId,
@@ -108,6 +118,14 @@ class MeetingDatum {
     required this.approvedRejectByUserDate,
     required this.meetingCheckInDateTime,
     required this.meetingCheckInFullAddress,
+    required this.meetingCheckInLatitude,
+    required this.meetingCheckInLongitude,
+    required this.checkpoint1DateTime,
+    required this.checkpoint1Latitude,
+    required this.checkpoint1Longitude,
+    required this.checkpoint2DateTime,
+    required this.checkpoint2Latitude,
+    required this.checkpoint2Longitude,
     required this.meetingTimeSlotFrom,
     required this.meetingTimeSlotTo,
     required this.meetingDate,
@@ -117,6 +135,8 @@ class MeetingDatum {
     required this.meetingCheckOutDateTime,
     required this.meetingCheckOutFullAddress,
     required this.meetingMinutes,
+    required this.meetingAgenda,
+    required this.holdingValue,
   });
 
   factory MeetingDatum.fromJson(Map<String, dynamic> json) => MeetingDatum(
@@ -152,6 +172,14 @@ class MeetingDatum {
     approvedRejectByUserDate: json["approved_reject_by_user_date"],
     meetingCheckInDateTime: json["meeting_check_in_date_time"],
     meetingCheckInFullAddress: json["meeting_check_in_full_address"],
+    meetingCheckInLatitude: json["meeting_check_in_latitude"]?.toString() ?? "",
+    meetingCheckInLongitude: json["meeting_check_in_longitude"]?.toString() ?? "",
+    checkpoint1DateTime: json["checkpoint1"]?.toString() ?? "",
+    checkpoint1Latitude: json["checkpoint1_latitude"]?.toString() ?? "",
+    checkpoint1Longitude: json["checkpoint1_longitude"]?.toString() ?? "",
+    checkpoint2DateTime: json["checkpoint2"]?.toString() ?? "",
+    checkpoint2Latitude: json["checkpoint2_latitude"]?.toString() ?? "",
+    checkpoint2Longitude: json["checkpoint2_longitude"]?.toString() ?? "",
     meetingTimeSlotFrom: json["meeting_time_slot_from"]!,
     meetingTimeSlotTo: json["meeting_time_slot_to"]!,
     meetingDate: json["meeting_date"],
@@ -161,6 +189,8 @@ class MeetingDatum {
     meetingCheckOutDateTime: json["meeting_check_out_date_time"] ?? "",
     meetingCheckOutFullAddress: json["meeting_check_out_full_address"] ?? "",
     meetingMinutes: json["meeting_minutes"] ?? "",
+    meetingAgenda: json["meeting_agenda"] ?? json["agenda"] ?? "",
+    holdingValue: json["holding_value"]?.toString() ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -196,6 +226,14 @@ class MeetingDatum {
     "approved_reject_by_user_date": approvedRejectByUserDate,
     "meeting_check_in_date_time": meetingCheckInDateTime,
     "meeting_check_in_full_address": meetingCheckInFullAddress,
+    "meeting_check_in_latitude": meetingCheckInLatitude,
+    "meeting_check_in_longitude": meetingCheckInLongitude,
+    "checkpoint1": checkpoint1DateTime,
+    "checkpoint1_latitude": checkpoint1Latitude,
+    "checkpoint1_longitude": checkpoint1Longitude,
+    "checkpoint2": checkpoint2DateTime,
+    "checkpoint2_latitude": checkpoint2Latitude,
+    "checkpoint2_longitude": checkpoint2Longitude,
     "meeting_time_slot_from": meetingTimeSlotFrom,
     "meeting_time_slot_to": meetingTimeSlotTo,
     "meeting_date": meetingDate,
@@ -205,6 +243,8 @@ class MeetingDatum {
     "meeting_check_out_date_time": meetingCheckOutDateTime,
     "meeting_check_out_full_address": meetingCheckOutFullAddress,
     "meeting_minutes": meetingMinutes,
+    "meeting_agenda": meetingAgenda,
+    "holding_value": holdingValue,
   };
 }
 

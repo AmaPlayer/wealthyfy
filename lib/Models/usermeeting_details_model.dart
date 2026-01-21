@@ -61,12 +61,22 @@ class MeetingDetailDatum {
   String fullAddress;
   String meetingCheckInStatus;
   String meetingCheckInDateTime;
+  String meetingCheckInLatitude;
+  String meetingCheckInLongitude;
+  String checkpoint1DateTime;
+  String checkpoint1Latitude;
+  String checkpoint1Longitude;
+  String checkpoint2DateTime;
+  String checkpoint2Latitude;
+  String checkpoint2Longitude;
   String meetingCheckOutStatus;
   String meetingCheckOutDateTime;
   String meetingCheckOutFullAddress;
   String meetingCheckOutLatitude;
   String meetingCheckOutLongitude;
   String meetingMinutes;
+  String meetingAgenda;
+  String holdingValue;
   String meetingTimeSlotFrom;
   String meetingTimeSlotTo;
   String meetingLatitude;
@@ -104,12 +114,22 @@ class MeetingDetailDatum {
     required this.meetingCheckInFullAddress,
     required this.meetingCheckInStatus,
     required this.meetingCheckInDateTime,
+    required this.meetingCheckInLatitude,
+    required this.meetingCheckInLongitude,
+    required this.checkpoint1DateTime,
+    required this.checkpoint1Latitude,
+    required this.checkpoint1Longitude,
+    required this.checkpoint2DateTime,
+    required this.checkpoint2Latitude,
+    required this.checkpoint2Longitude,
     required this.meetingCheckOutStatus,
     required this.meetingCheckOutDateTime,
     required this.meetingCheckOutFullAddress,
     required this.meetingCheckOutLatitude,
     required this.meetingCheckOutLongitude,
     required this.meetingMinutes,
+    required this.meetingAgenda,
+    required this.holdingValue,
     required this.meetingTimeSlotFrom,
     required this.meetingTimeSlotTo,
     required this.meetingLatitude,
@@ -148,12 +168,22 @@ class MeetingDetailDatum {
     meetingCheckInFullAddress: json["meeting_check_in_full_address"],
     meetingCheckInStatus: _normalizeStatus(json["meeting_check_in_status"]),
     meetingCheckInDateTime: json["meeting_check_in_date_time"],
+    meetingCheckInLatitude: json["meeting_check_in_latitude"]?.toString() ?? "",
+    meetingCheckInLongitude: json["meeting_check_in_longitude"]?.toString() ?? "",
+    checkpoint1DateTime: json["checkpoint1"]?.toString() ?? "",
+    checkpoint1Latitude: json["checkpoint1_latitude"]?.toString() ?? "",
+    checkpoint1Longitude: json["checkpoint1_longitude"]?.toString() ?? "",
+    checkpoint2DateTime: json["checkpoint2"]?.toString() ?? "",
+    checkpoint2Latitude: json["checkpoint2_latitude"]?.toString() ?? "",
+    checkpoint2Longitude: json["checkpoint2_longitude"]?.toString() ?? "",
     meetingCheckOutStatus: _normalizeStatus(json["meeting_check_out_status"]),
     meetingCheckOutDateTime: json["meeting_check_out_date_time"] ?? "",
     meetingCheckOutFullAddress: json["meeting_check_out_full_address"] ?? "",
     meetingCheckOutLatitude: json["meeting_check_out_latitude"] ?? "",
     meetingCheckOutLongitude: json["meeting_check_out_longitude"] ?? "",
     meetingMinutes: json["meeting_minutes"] ?? "",
+    meetingAgenda: json["meeting_agenda"] ?? json["agenda"] ?? "",
+    holdingValue: json["holding_value"]?.toString() ?? "",
     meetingTimeSlotFrom: json["meeting_time_slot_from"],
     meetingTimeSlotTo: json["meeting_time_slot_to"],
     meetingLatitude: json["meeting_latitude"],
@@ -192,12 +222,22 @@ class MeetingDetailDatum {
     "meeting_check_in_full_address": meetingCheckInFullAddress,
     "meeting_check_in_status": meetingCheckInStatus,
     "meeting_check_in_date_time": meetingCheckInDateTime,
+    "meeting_check_in_latitude": meetingCheckInLatitude,
+    "meeting_check_in_longitude": meetingCheckInLongitude,
+    "checkpoint1": checkpoint1DateTime,
+    "checkpoint1_latitude": checkpoint1Latitude,
+    "checkpoint1_longitude": checkpoint1Longitude,
+    "checkpoint2": checkpoint2DateTime,
+    "checkpoint2_latitude": checkpoint2Latitude,
+    "checkpoint2_longitude": checkpoint2Longitude,
     "meeting_check_out_status": meetingCheckOutStatus,
     "meeting_check_out_date_time": meetingCheckOutDateTime,
     "meeting_check_out_full_address": meetingCheckOutFullAddress,
     "meeting_check_out_latitude": meetingCheckOutLatitude,
     "meeting_check_out_longitude": meetingCheckOutLongitude,
     "meeting_minutes": meetingMinutes,
+    "meeting_agenda": meetingAgenda,
+    "holding_value": holdingValue,
     "meeting_time_slot_from": meetingTimeSlotFrom,
     "meeting_time_slot_to": meetingTimeSlotTo,
     "meeting_latitude": meetingLatitude,

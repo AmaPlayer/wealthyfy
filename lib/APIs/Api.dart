@@ -314,7 +314,9 @@ Future<APIResponse> teamDesignationListUrlApi( Map<String, dynamic> hashmap)asyn
 
 Future<APIResponse> userMeetingDetailsApi( Map<String, dynamic> hashmap)async{
   try {
-    final response = await http.post(Uri.parse(userMeetingDetailUrl),body: hashmap);
+    final response = await http
+        .post(Uri.parse(userMeetingDetailUrl), body: hashmap)
+        .timeout(const Duration(seconds: 20));
     var data = jsonDecode(response.body);
     if (data["status"]) {
       UserMeetingDetailsModel model = userMeetingDetailsModelFromJson(response.body);

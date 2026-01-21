@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:excel/excel.dart' hide Border;
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:meeting/Models/usermeeting_List_model.dart';
 import 'package:meeting/controller/filtercontroller/meetingfilter.dart';
 import 'package:meeting/helper/colors.dart';
 import 'package:meeting/screens/teammeeting_detail.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../controller/dashboardcontroller.dart';
@@ -92,17 +94,40 @@ class _meetingListViewState extends State<meetingListView> {
         'Approver Type',
         'Approval Date',
         'Check-In DateTime',
+        'Check-In Time',
         'Check-In Address',
+        'Check-Out DateTime',
+        'Check-Out Time',
+        'Check-Out Address',
+        'Agenda',
         'Meeting Slot From',
         'Meeting Slot To',
         'Meeting Date',
         'Meeting Time',
         'Check-In Status',
+        'CP0 Latitude',
+        'CP0 Longitude',
+        'CP1 Timestamp',
+        'CP1 Latitude',
+        'CP1 Longitude',
+        'CP2 Timestamp',
+        'CP2 Latitude',
+        'CP2 Longitude',
+        'CP0->CP1 Distance',
+        'CP1->CP2 Distance',
+        'CP0->CP2 Distance',
       ];
       sheetObject.appendRow(headers.map(cellValue).toList());
 
 // Add data rows
       for (var meeting in meetingList) {
+        final cp0Lat = _parseCoord(meeting.meetingCheckInLatitude);
+        final cp0Lng = _parseCoord(meeting.meetingCheckInLongitude);
+        final cp1Lat = _parseCoord(meeting.checkpoint1Latitude);
+        final cp1Lng = _parseCoord(meeting.checkpoint1Longitude);
+        final cp2Lat = _parseCoord(meeting.checkpoint2Latitude);
+        final cp2Lng = _parseCoord(meeting.checkpoint2Longitude);
+
         sheetObject.appendRow([
           meeting.tblMeetingId,
           meeting.tblUserId,
@@ -135,12 +160,28 @@ class _meetingListViewState extends State<meetingListView> {
           meeting.approvedRejectByUserType,
           meeting.approvedRejectByUserDate,
           meeting.meetingCheckInDateTime,
+          _extractTime(meeting.meetingCheckInDateTime),
           meeting.meetingCheckInFullAddress,
+          meeting.meetingCheckOutDateTime,
+          _extractTime(meeting.meetingCheckOutDateTime),
+          meeting.meetingCheckOutFullAddress,
+          meeting.meetingAgenda,
           meeting.meetingTimeSlotFrom,
           meeting.meetingTimeSlotTo,
           meeting.meetingDate,
           meeting.meetingTime,
           meeting.meetingCheckInStatus,
+          meeting.meetingCheckInLatitude,
+          meeting.meetingCheckInLongitude,
+          meeting.checkpoint1DateTime,
+          meeting.checkpoint1Latitude,
+          meeting.checkpoint1Longitude,
+          meeting.checkpoint2DateTime,
+          meeting.checkpoint2Latitude,
+          meeting.checkpoint2Longitude,
+          _formatDistance(_distanceMeters(cp0Lat, cp0Lng, cp1Lat, cp1Lng)),
+          _formatDistance(_distanceMeters(cp1Lat, cp1Lng, cp2Lat, cp2Lng)),
+          _formatDistance(_distanceMeters(cp0Lat, cp0Lng, cp2Lat, cp2Lng)),
         ].map(cellValue).toList());
       }
 
@@ -177,6 +218,45 @@ class _meetingListViewState extends State<meetingListView> {
       print('Error generating Excel file: $e');
     }
   }
+
+  String _extractTime(String value) {
+    if (value.isEmpty || value == "--") return "--";
+    try {
+      final parsed = DateFormat("dd-MM-yyyy, hh:mm:ss a").parse(value);
+      return DateFormat("hh:mm:ss a").format(parsed);
+    } catch (_) {
+      return value;
+    }
+  }
+
+  double? _parseCoord(String? value) {
+    if (value == null) return null;
+    final trimmed = value.trim();
+    if (trimmed.isEmpty || trimmed == "--") return null;
+    return double.tryParse(trimmed);
+  }
+
+  double? _distanceMeters(double? lat1, double? lon1, double? lat2, double? lon2) {
+    if (lat1 == null || lon1 == null || lat2 == null || lon2 == null) return null;
+    const earthRadius = 6371000.0;
+    final dLat = _degToRad(lat2 - lat1);
+    final dLon = _degToRad(lon2 - lon1);
+    final a = (math.sin(dLat / 2) * math.sin(dLat / 2)) +
+        math.cos(_degToRad(lat1)) * math.cos(_degToRad(lat2)) *
+            math.sin(dLon / 2) * math.sin(dLon / 2);
+    final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
+    return earthRadius * c;
+  }
+
+  String _formatDistance(double? meters) {
+    if (meters == null) return "--";
+    if (meters >= 1000) {
+      return "${(meters / 1000).toStringAsFixed(2)} km";
+    }
+    return "${meters.toStringAsFixed(2)} m";
+  }
+
+  double _degToRad(double deg) => deg * (3.141592653589793 / 180.0);
 
   initiatMeetingApi() {
     var hasMap = {

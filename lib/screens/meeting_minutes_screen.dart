@@ -16,12 +16,14 @@ class MeetingMinutesScreen extends StatefulWidget {
   final String tblMeetingId;
   final String meetingDate;
   final String initialMinutes;
+  final String initialHoldingValue;
 
   const MeetingMinutesScreen({
     super.key,
     required this.tblMeetingId,
     required this.meetingDate,
     this.initialMinutes = "",
+    this.initialHoldingValue = "",
   });
 
   @override
@@ -30,17 +32,20 @@ class MeetingMinutesScreen extends StatefulWidget {
 
 class _MeetingMinutesScreenState extends State<MeetingMinutesScreen> {
   final TextEditingController meetingMinutesController = TextEditingController();
+  final TextEditingController holdingValueController = TextEditingController();
   bool isSubmitting = false;
 
   @override
   void initState() {
     super.initState();
     meetingMinutesController.text = widget.initialMinutes;
+    holdingValueController.text = widget.initialHoldingValue;
   }
 
   @override
   void dispose() {
     meetingMinutesController.dispose();
+    holdingValueController.dispose();
     super.dispose();
   }
 
@@ -66,6 +71,12 @@ class _MeetingMinutesScreenState extends State<MeetingMinutesScreen> {
       return;
     }
 
+    final holdingValue = holdingValueController.text.trim();
+    if (holdingValue.isEmpty) {
+      showErrorBottomSheet("Please enter holding value.");
+      return;
+    }
+
     if (!_isWithinOneMonth(widget.meetingDate)) {
       showErrorBottomSheet("Minutes can only be added within 1 month.");
       return;
@@ -79,6 +90,7 @@ class _MeetingMinutesScreenState extends State<MeetingMinutesScreen> {
       "tbl_user_id": viewLoginDetail!.data.first.tblUserId.toString(),
       "tbl_meeting_id": widget.tblMeetingId,
       "meeting_minutes": minutes,
+      "holding_value": holdingValue,
     };
 
     final onValue = await meetingMinutesApi(hashMap);
@@ -130,7 +142,7 @@ class _MeetingMinutesScreenState extends State<MeetingMinutesScreen> {
                 border: Border.all(color: ColorConstants.GREYCOLOR),
               ),
               child: headingFullText(
-                title: "Note: Please fill minutes of meeting/agenda , benefit to company and networth.",
+                title: "Note: Please fill minutes of meeting/agenda, holding value, benefit to company and networth.",
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: ColorConstants.BLACKCOLOR,
@@ -144,6 +156,26 @@ class _MeetingMinutesScreenState extends State<MeetingMinutesScreen> {
               cursorColor: ColorConstants.GREYCOLOR,
               decoration: InputDecoration(
                 labelText: 'Minutes / Agenda',
+                labelStyle: const TextStyle(
+                  fontSize: 16,
+                  color: ColorConstants.GREYCOLOR,
+                ),
+                border: const OutlineInputBorder(),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(
+                    color: ColorConstants.DarkMahroon,
+                  ),
+                ),
+              ),
+            ),
+            addPadding(15, 0),
+            TextFormField(
+              controller: holdingValueController,
+              keyboardType: TextInputType.number,
+              cursorColor: ColorConstants.GREYCOLOR,
+              decoration: InputDecoration(
+                labelText: 'Holding Value',
                 labelStyle: const TextStyle(
                   fontSize: 16,
                   color: ColorConstants.GREYCOLOR,
