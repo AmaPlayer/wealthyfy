@@ -57,6 +57,12 @@ String announcementUrl = "${BaseUrl}announcementapi";
 
 //----------------------------------------------------------------------------
 
+Map<String, String> authHeaders() {
+  final token = viewLoginDetail?.data.first.jwtToken ?? "";
+  if (token.isEmpty) return {};
+  return {"Authorization": "Bearer $token"};
+}
+
 Future<APIResponse> loginApi(Map<String, dynamic> hashMap) async {
   try {
     final response = await http.post(Uri.parse(loginUrl), body: hashMap);
@@ -78,11 +84,8 @@ Future<APIResponse> myProfileAPI({String? bToken}) async {
   Map<String, dynamic> hasMap = {
     "tbl_user_id": viewLoginDetail!.data.first.tblUserId.toString()
   };
-  var headers = {
-    authorization: "$bKey ${viewLoginDetail!.data.first.jwtToken}",
-  };
   try {
-    final response = await http.post(Uri.parse(profileUrl), body: hasMap, headers: headers);
+    final response = await http.post(Uri.parse(profileUrl), body: hasMap, headers: authHeaders());
     data = jsonDecode(response.body);
      print("check profile Api response $data");
     if (data[status]) {
@@ -119,7 +122,7 @@ Future<APIResponse> attendanceApi(String startDate, String endDate, String userA
   };
   print("check my attandance $hashmap");
   try {
-    final response = await http.post(Uri.parse(attendanceListUrl),body: hashmap);
+    final response = await http.post(Uri.parse(attendanceListUrl),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     print("attendanceApi data $data");
     if (data["status"]) {
@@ -136,7 +139,7 @@ Future<APIResponse> attendanceApi(String startDate, String endDate, String userA
 
 Future<APIResponse> leaveTypeApi()async{
   try {
-    final response = await http.get(Uri.parse(leaveTypeUrl));
+    final response = await http.get(Uri.parse(leaveTypeUrl), headers: authHeaders());
     var data = jsonDecode(response.body);
     if (data["status"]) {
       LeaveTypeModel model = leaveTypeModelFromJson(response.body,);
@@ -151,7 +154,7 @@ Future<APIResponse> leaveTypeApi()async{
 
 Future<APIResponse> userLeaveApplyApi( Map<String, dynamic> hashmap)async{
   try {
-    final response = await http.post(Uri.parse(userLeaveApplyUrl),body: hashmap);
+    final response = await http.post(Uri.parse(userLeaveApplyUrl),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     print('check_data$data');
     if (data["status"]) {
@@ -168,7 +171,7 @@ Future<APIResponse> userLeaveApplyApi( Map<String, dynamic> hashmap)async{
 Future<APIResponse> userLeaveApplyListApi(Map<String,dynamic>hashmap)async{
 
   try {
-    final response = await http.post(Uri.parse(userLeaveApplyListUrl),body: hashmap);
+    final response = await http.post(Uri.parse(userLeaveApplyListUrl),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     if (data["status"]) {
       UserLeaveApplyListModel model = userLeaveApplyListModelFromJson(response.body);
@@ -183,7 +186,7 @@ Future<APIResponse> userLeaveApplyListApi(Map<String,dynamic>hashmap)async{
 
 Future<APIResponse> userLeaveApplyDetailsApi( Map<String, dynamic> hashmap)async{
   try {
-    final response = await http.post(Uri.parse(userLeaveApplyDetailsUrl),body: hashmap);
+    final response = await http.post(Uri.parse(userLeaveApplyDetailsUrl),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     if (data["status"]) {
       UserLeaveDetailsModel model = userLeaveAppDetailsModelFromJson(response.body);
@@ -198,7 +201,7 @@ Future<APIResponse> userLeaveApplyDetailsApi( Map<String, dynamic> hashmap)async
 
 Future<APIResponse> createMeetingApi( Map<String, dynamic> hashmap)async{
   try {
-    final response = await http.post(Uri.parse(createMeetingUrl),body: hashmap);
+    final response = await http.post(Uri.parse(createMeetingUrl),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     if (data["status"]) {
       return APIResponse(message: data["message"], status: true,);
@@ -217,6 +220,7 @@ Future<APIResponse> updateProfileImgApi(String userImg) async {
   try {
     final res = http.MultipartRequest('POST', Uri.parse(userUploadImageUrl));
     res.fields.addAll(hasMap);
+    res.headers.addAll(authHeaders());
     String userImgExtension = userImg.toString().split('.').last;
     res.files.add(await http.MultipartFile.fromPath('user_image', userImg,contentType: MediaType('image', userImgExtension)));
     var sendRequest = await res.send();
@@ -235,7 +239,7 @@ Future<APIResponse> updateProfileImgApi(String userImg) async {
 
 Future<APIResponse> faqApi() async {
   try {
-    final response = await http.get(Uri.parse(faqUrl));
+    final response = await http.get(Uri.parse(faqUrl), headers: authHeaders());
     final raw = jsonDecode(response.body);
     if (raw[status]) {
       FaqModel model = FaqModel.fromApi(Map<String, dynamic>.from(raw));
@@ -250,7 +254,7 @@ Future<APIResponse> faqApi() async {
 
 Future<APIResponse> announcementApi() async {
   try {
-    final response = await http.get(Uri.parse(announcementUrl));
+    final response = await http.get(Uri.parse(announcementUrl), headers: authHeaders());
     final raw = jsonDecode(response.body);
     if (raw[status]) {
       AnnouncementModel model =
@@ -266,7 +270,7 @@ Future<APIResponse> announcementApi() async {
 
 Future<APIResponse> createMeetingListApi( Map<String, dynamic> hashmap)async{
   try {
-    final response = await http.post(Uri.parse(userMeetingListUrl),body: hashmap);
+    final response = await http.post(Uri.parse(userMeetingListUrl),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     print("checkk,   $data");
     if (data["status"]) {
@@ -283,7 +287,7 @@ Future<APIResponse> createMeetingListApi( Map<String, dynamic> hashmap)async{
 
 Future<APIResponse> myTeamListApi( Map<String, dynamic> hashmap)async{
   try {
-    final response = await http.post(Uri.parse(myTeamListUrl),body: hashmap);
+    final response = await http.post(Uri.parse(myTeamListUrl),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     print("check down line here$data");
     if (data["status"]) {
@@ -299,7 +303,7 @@ Future<APIResponse> myTeamListApi( Map<String, dynamic> hashmap)async{
 
 Future<APIResponse> teamDesignationListUrlApi( Map<String, dynamic> hashmap)async{
   try {
-    final response = await http.post(Uri.parse(teamDesignationListUrl),body: hashmap);
+    final response = await http.post(Uri.parse(teamDesignationListUrl),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     if (data["status"]) {
       TeamDesignationListModel model =teamDesignationListModelFromJson(response.body);
@@ -315,7 +319,7 @@ Future<APIResponse> teamDesignationListUrlApi( Map<String, dynamic> hashmap)asyn
 Future<APIResponse> userMeetingDetailsApi( Map<String, dynamic> hashmap)async{
   try {
     final response = await http
-        .post(Uri.parse(userMeetingDetailUrl), body: hashmap)
+        .post(Uri.parse(userMeetingDetailUrl), body: hashmap, headers: authHeaders())
         .timeout(const Duration(seconds: 20));
     var data = jsonDecode(response.body);
     if (data["status"]) {
@@ -332,7 +336,7 @@ Future<APIResponse> userMeetingDetailsApi( Map<String, dynamic> hashmap)async{
 
 Future<APIResponse> updateMeetingApi(Map<String,dynamic>hashmap)async{
   try{
-    final response = await http.post(Uri.parse(updateMeetingUrl),body: hashmap);
+    final response = await http.post(Uri.parse(updateMeetingUrl),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     if(data["status"]) {
       return APIResponse(message: data["message"], status: true);
@@ -347,7 +351,7 @@ Future<APIResponse> updateMeetingApi(Map<String,dynamic>hashmap)async{
 
 Future<APIResponse> meetingApprovedRejectedApi(Map<String,dynamic>hashmap)async{
   try{
-    final response = await http.post(Uri.parse(meetingRejectedApprovedUrl),body: hashmap);
+    final response = await http.post(Uri.parse(meetingRejectedApprovedUrl),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     print('CHECK_APPROVED_API$data');
     if(data["status"]) {
@@ -363,7 +367,7 @@ Future<APIResponse> meetingApprovedRejectedApi(Map<String,dynamic>hashmap)async{
 
 Future<APIResponse>  yesterdayUserAttendanceApi(Map<String,dynamic>hashmap)async{
   try{
-    final response = await http.post(Uri.parse(yesterdayUserAttendanceUrl),body: hashmap);
+    final response = await http.post(Uri.parse(yesterdayUserAttendanceUrl),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     if(data["status"]){
       YesterdayUserAttendanceModel model = yesterdayUserAttendanceModelFromJson (response.body);
@@ -379,7 +383,7 @@ Future<APIResponse>  yesterdayUserAttendanceApi(Map<String,dynamic>hashmap)async
 
 Future<APIResponse> dashboardApprovedMeetingApi(Map<String,dynamic>hashmap)async{
   try{
-    final response = await http.post(Uri.parse(dashboardApprovedMeetingUrl),body: hashmap);
+    final response = await http.post(Uri.parse(dashboardApprovedMeetingUrl),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     if(data["status"]){
       DashboardApprovedMeetingModel model = dashboardApprovedMeetingModelFromJson (response.body);
@@ -395,7 +399,7 @@ Future<APIResponse> dashboardApprovedMeetingApi(Map<String,dynamic>hashmap)async
 
 Future<APIResponse> notificationUrlApi(Map<String,dynamic>hashmap)async{
   try{
-    final response = await http.post(Uri.parse(notificationUrl),body: hashmap);
+    final response = await http.post(Uri.parse(notificationUrl),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     if(data["status"]){
       NotificationModelList model = notificationModelListFromJson (response.body);
@@ -411,7 +415,7 @@ Future<APIResponse> notificationUrlApi(Map<String,dynamic>hashmap)async{
 
 Future<APIResponse> meetingCheckInApi (Map<String,dynamic>hashmap)async{
   try{
-    final response = await http.post(Uri.parse(meetingCheckInUrl),body: hashmap);
+    final response = await http.post(Uri.parse(meetingCheckInUrl),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     print('CHECK_DATA$data');
     if(data["status"]){
@@ -427,7 +431,7 @@ Future<APIResponse> meetingCheckInApi (Map<String,dynamic>hashmap)async{
 
 Future<APIResponse> meetingCheckOutApi(Map<String, dynamic> hashmap) async {
   try {
-    final response = await http.post(Uri.parse(meetingCheckOutUrl), body: hashmap);
+    final response = await http.post(Uri.parse(meetingCheckOutUrl), body: hashmap, headers: authHeaders());
     final data = jsonDecode(response.body);
     if (data["status"]) {
       return APIResponse(message: data["message"], status: true);
@@ -442,7 +446,7 @@ Future<APIResponse> meetingCheckOutApi(Map<String, dynamic> hashmap) async {
 
 Future<APIResponse> meetingMinutesApi(Map<String, dynamic> hashmap) async {
   try {
-    final response = await http.post(Uri.parse(meetingMinutesUrl), body: hashmap);
+    final response = await http.post(Uri.parse(meetingMinutesUrl), body: hashmap, headers: authHeaders());
     final data = jsonDecode(response.body);
     if (data["status"]) {
       return APIResponse(message: data["message"], status: true);
@@ -458,7 +462,7 @@ Future<APIResponse> meetingMinutesApi(Map<String, dynamic> hashmap) async {
 Future<APIResponse> meetingPermissionCheckApi(Map<String, dynamic> hashMap) async {
   try {
     final response =
-        await http.post(Uri.parse(meetingPermissionCheckUrl), body: hashMap);
+        await http.post(Uri.parse(meetingPermissionCheckUrl), body: hashMap, headers: authHeaders());
     final data = jsonDecode(response.body);
     return APIResponse(
       message: data["message"] ?? "",
@@ -473,7 +477,10 @@ Future<APIResponse> meetingFakeCheckApi(Map<String, dynamic> payload) async {
   try {
     final response = await http.post(
       Uri.parse(meetingFakeCheckUrl),
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Content-Type": "application/json",
+        ...authHeaders(),
+      },
       body: jsonEncode(payload),
     );
 
@@ -495,7 +502,7 @@ Future<APIResponse> meetingFakeCheckApi(Map<String, dynamic> payload) async {
 
 Future <APIResponse> leaveApproveRejectApi (Map<String,dynamic>hashmap)async{
   try{
-    final  response = await http.post(Uri.parse(leaveApproveRejectUlr),body: hashmap);
+    final  response = await http.post(Uri.parse(leaveApproveRejectUlr),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     print(('CHECK_LEAVE_REJECT$data'));
     if(data["status"]){
@@ -511,7 +518,7 @@ Future <APIResponse> leaveApproveRejectApi (Map<String,dynamic>hashmap)async{
 
 Future <APIResponse> teamAttendanceUlrApi (Map<String,dynamic>hashmap)async{
   try{
-    final  response = await http.post(Uri.parse(teamAttendanceUlr),body: hashmap);
+    final  response = await http.post(Uri.parse(teamAttendanceUlr),body: hashmap, headers: authHeaders());
     var data = jsonDecode(response.body);
     print(('teamAttendance $data'));
     if(data["status"]){
@@ -529,7 +536,7 @@ Future <APIResponse> teamAttendanceUlrApi (Map<String,dynamic>hashmap)async{
 Future<APIResponse> checkinAPI(Map<String, dynamic> hashMap) async {
 
   try {
-    final response = await http.post(Uri.parse(checkinUrl),body: hashMap);
+    final response = await http.post(Uri.parse(checkinUrl),body: hashMap, headers: authHeaders());
     var data = jsonDecode(response.body);
     if (data["status"]) {
       final responseData = json.decode(response.body);
@@ -544,7 +551,7 @@ Future<APIResponse> checkinAPI(Map<String, dynamic> hashMap) async {
 }
 Future<APIResponse> checkoutAPI(Map<String, dynamic> hashMap) async {
   try {
-    final response = await http.post(Uri.parse(checkoutUrl),body: hashMap);
+    final response = await http.post(Uri.parse(checkoutUrl),body: hashMap, headers: authHeaders());
     var data = jsonDecode(response.body);
     print('CHECK_OUT_API$data');
     if (data["status"]) {
@@ -611,7 +618,6 @@ late Map data;
 String status = "status";
 String message = "message";
 String authorization = "Authorization";
-String bKey = viewLoginDetail!.data.first.jwtToken;
 // APIResponse
 
 class APIResponse {
