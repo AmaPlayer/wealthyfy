@@ -102,39 +102,39 @@ class DasApprovedMeetingDatum {
   });
 
   factory DasApprovedMeetingDatum.fromJson(Map<String, dynamic> json) => DasApprovedMeetingDatum(
-    tblMeetingId: json["tbl_meeting_id"],
-    tblUserId: json["tbl_user_id"],
-    tblOfficeId: json["tbl_office_id"],
-    clientId: json["client_id"],
-    clientName: json["client_name"],
-    clientEmail: json["client_email"],
-    clientMobile: json["client_mobile"],
-    city: json["city"],
-    state: json["state"],
-    country: json["country"],
-    familyDetails: json["family_details"],
-    stockPortfolioWithUs: json["stock_portfolio_with_us"],
-    stockPortfolioWithOtherBroker: json["stock_portfolio_with_other_broker"],
-    mutualFundPortfolio: json["mutual_fund_portfolio"],
-    fixedDeposite: json["fixed_deposite"],
-    loanDetails: json["loan_details"],
-    insurance: json["insurance"],
-    pms: json["pms"],
-    ncd: json["ncd"],
-    reference1: json["reference_1"],
-    reference2: json["reference_2"],
-    remark: json["remark"],
-    meetingStatus: json["meeting_status"],
-    meetingDate: json["meeting_date"],
-    meetingTime: json["meeting_time"],
-    approvedByUserId: json["approved_by_user_id"],
-    approvedByUserName: json["approved_by_user_name"],
-    approvedByUserType: json["approved_by_user_type"],
-    approvedByUserDate: json["approved_by_user_date"],
-    approvedByUserTime: json["approved_by_user_time"],
+    tblMeetingId: _asString(json["tbl_meeting_id"]),
+    tblUserId: _asInt(json["tbl_user_id"]),
+    tblOfficeId: _asInt(json["tbl_office_id"]),
+    clientId: _asString(json["client_id"]),
+    clientName: _asString(json["client_name"]),
+    clientEmail: _asString(json["client_email"]),
+    clientMobile: _asString(json["client_mobile"]),
+    city: _asString(json["city"]),
+    state: _asString(json["state"]),
+    country: _asString(json["country"]),
+    familyDetails: _asString(json["family_details"]),
+    stockPortfolioWithUs: _asString(json["stock_portfolio_with_us"]),
+    stockPortfolioWithOtherBroker: _asString(json["stock_portfolio_with_other_broker"]),
+    mutualFundPortfolio: _asString(json["mutual_fund_portfolio"]),
+    fixedDeposite: _asString(json["fixed_deposite"]),
+    loanDetails: _asString(json["loan_details"]),
+    insurance: _asString(json["insurance"]),
+    pms: _asString(json["pms"]),
+    ncd: _asString(json["ncd"]),
+    reference1: _asString(json["reference_1"]),
+    reference2: _asString(json["reference_2"]),
+    remark: _asString(json["remark"]),
+    meetingStatus: _asString(json["meeting_status"]),
+    meetingDate: _asString(json["meeting_date"]),
+    meetingTime: _asString(json["meeting_time"]),
+    approvedByUserId: _asInt(json["approved_by_user_id"]),
+    approvedByUserName: _asString(json["approved_by_user_name"]),
+    approvedByUserType: _asString(json["approved_by_user_type"]),
+    approvedByUserDate: _asString(json["approved_by_user_date"]),
+    approvedByUserTime: _asString(json["approved_by_user_time"]),
     meetingCheckInStatus: _normalizeStatus(json["meeting_check_in_status"]),
     meetingCheckOutStatus: _normalizeStatus(json["meeting_check_out_status"]),
-    meetingCheckOutDateTime: json["meeting_check_out_date_time"] ?? "",
+    meetingCheckOutDateTime: _asString(json["meeting_check_out_date_time"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -179,4 +179,15 @@ String _normalizeStatus(dynamic value) {
   final raw = value.toString().toLowerCase();
   if (raw == "1" || raw == "yes" || raw == "true") return "yes";
   return "no";
+}
+
+String _asString(dynamic value) {
+  if (value == null) return "";
+  return value.toString();
+}
+
+int _asInt(dynamic value) {
+  if (value == null) return 0;
+  if (value is int) return value;
+  return int.tryParse(value.toString()) ?? 0;
 }

@@ -11,6 +11,7 @@ import '../helper/NotificationServices.dart';
 import '../helper/colors.dart';
 class DashboardController extends GetxController {
   RxList<MyProfileDatum> profileData = <MyProfileDatum>[].obs;
+  RxString profileError = "".obs;
   RxList levelList = [].obs;
   final selectedIndex = 0.obs;
   final Rxn<FaqModel> faqData = Rxn<FaqModel>();
@@ -47,7 +48,9 @@ class DashboardController extends GetxController {
     if (value.status) {
       MyProfileModel myModel = value.data;
       profileData.value = myModel.data;
+      profileError.value = "";
     } else {
+      profileError.value = value.message.toString();
       print("PROFILE_API_EXCEPTION => ${value.message}");
     }
   }

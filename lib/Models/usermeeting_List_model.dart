@@ -140,38 +140,38 @@ class MeetingDatum {
   });
 
   factory MeetingDatum.fromJson(Map<String, dynamic> json) => MeetingDatum(
-    tblMeetingId: json["tbl_meeting_id"],
-    tblUserId: json["tbl_user_id"],
+    tblMeetingId: _asString(json["tbl_meeting_id"]),
+    tblUserId: _asInt(json["tbl_user_id"]),
     empId: json["emp_id"],
     fullName: json["full_name"],
     designationAbbr: json["designation_abbr"],
-    tblOfficeId: json["tbl_office_id"],
-    clientId: json["client_id"],
-    clientName: json["client_name"],
-    clientEmail: json["client_email"],
-    clientMobile: json["client_mobile"],
-    city: json["city"],
-    state: json["state"],
-    country: json["country"],
-    fullAddress: json["full_address"],
-    familyDetails: json["family_details"],
-    stockPortfolioWithUs: json["stock_portfolio_with_us"],
-    stockPortfolioWithOtherBroker: json["stock_portfolio_with_other_broker"],
+    tblOfficeId: _asInt(json["tbl_office_id"]),
+    clientId: _asString(json["client_id"]),
+    clientName: _asString(json["client_name"]),
+    clientEmail: _asString(json["client_email"]),
+    clientMobile: _asString(json["client_mobile"]),
+    city: _asString(json["city"]),
+    state: _asString(json["state"]),
+    country: _asString(json["country"]),
+    fullAddress: _asString(json["full_address"]),
+    familyDetails: _asString(json["family_details"]),
+    stockPortfolioWithUs: _asString(json["stock_portfolio_with_us"]),
+    stockPortfolioWithOtherBroker: _asString(json["stock_portfolio_with_other_broker"]),
     mutualFundPortfolio: json["mutual_fund_portfolio"]!,
     fixedDeposite: json["fixed_deposite"],
-    loanDetails: json["loan_details"],
-    insurance: json["insurance"]!,
-    pms: json["pms"],
+    loanDetails: _asString(json["loan_details"]),
+    insurance: _asString(json["insurance"]),
+    pms: _asString(json["pms"]),
     ncd: json["ncd"]!,
-    reference1: json["reference_1"],
-    reference2: json["reference_2"],
-    remark: json["remark"],
-    meetingStatus: json["meeting_status"]!,
-    approvedRejectByUserName: json["approved_reject_by_user_name"],
-    approvedRejectByUserType: json["approved_reject_by_user_type"],
-    approvedRejectByUserDate: json["approved_reject_by_user_date"],
-    meetingCheckInDateTime: json["meeting_check_in_date_time"],
-    meetingCheckInFullAddress: json["meeting_check_in_full_address"],
+    reference1: _asString(json["reference_1"]),
+    reference2: _asString(json["reference_2"]),
+    remark: _asString(json["remark"]),
+    meetingStatus: _asString(json["meeting_status"]),
+    approvedRejectByUserName: _asString(json["approved_reject_by_user_name"]),
+    approvedRejectByUserType: _asString(json["approved_reject_by_user_type"]),
+    approvedRejectByUserDate: _asString(json["approved_reject_by_user_date"]),
+    meetingCheckInDateTime: _asString(json["meeting_check_in_date_time"]),
+    meetingCheckInFullAddress: _asString(json["meeting_check_in_full_address"]),
     meetingCheckInLatitude: json["meeting_check_in_latitude"]?.toString() ?? "",
     meetingCheckInLongitude: json["meeting_check_in_longitude"]?.toString() ?? "",
     checkpoint1DateTime: json["checkpoint1"]?.toString() ?? "",
@@ -180,10 +180,10 @@ class MeetingDatum {
     checkpoint2DateTime: json["checkpoint2"]?.toString() ?? "",
     checkpoint2Latitude: json["checkpoint2_latitude"]?.toString() ?? "",
     checkpoint2Longitude: json["checkpoint2_longitude"]?.toString() ?? "",
-    meetingTimeSlotFrom: json["meeting_time_slot_from"]!,
-    meetingTimeSlotTo: json["meeting_time_slot_to"]!,
-    meetingDate: json["meeting_date"],
-    meetingTime: json["meeting_time"],
+    meetingTimeSlotFrom: _asString(json["meeting_time_slot_from"]),
+    meetingTimeSlotTo: _asString(json["meeting_time_slot_to"]),
+    meetingDate: _asString(json["meeting_date"]),
+    meetingTime: _asString(json["meeting_time"]),
     meetingCheckInStatus: _normalizeStatus(json["meeting_check_in_status"]),
     meetingCheckOutStatus: _normalizeStatus(json["meeting_check_out_status"]),
     meetingCheckOutDateTime: json["meeting_check_out_date_time"] ?? "",
@@ -253,4 +253,15 @@ String _normalizeStatus(dynamic value) {
   final raw = value.toString().toLowerCase();
   if (raw == "1" || raw == "yes" || raw == "true") return "yes";
   return "no";
+}
+
+String _asString(dynamic value) {
+  if (value == null) return "";
+  return value.toString();
+}
+
+int _asInt(dynamic value) {
+  if (value == null) return 0;
+  if (value is int) return value;
+  return int.tryParse(value.toString()) ?? 0;
 }

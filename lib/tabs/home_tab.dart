@@ -36,10 +36,31 @@ class HomeTab extends GetView<HomeTabController> {
               backgroundColor: const Color(0xFF5D0C1D),
             ),
             body: controller.dController.profileData.isEmpty
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      color: ColorConstants.DarkMahroon,
-                    ),
+                ? Center(
+                    child: controller.dController.profileError.value.isNotEmpty
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              headingText(
+                                title: controller.dController.profileError.value,
+                                color: ColorConstants.REDCOLOR,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              addPadding(10, 0),
+                              TextButton(
+                                onPressed: () => controller.dController.initiateProfileApi(),
+                                child: headingText(
+                                  title: 'Retry',
+                                  color: ColorConstants.DarkMahroon,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          )
+                        : const CircularProgressIndicator(
+                            color: ColorConstants.DarkMahroon,
+                          ),
                   )
                 : Padding(
                     padding: const EdgeInsets.only(left: 8, right: 8),

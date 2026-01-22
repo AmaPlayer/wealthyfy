@@ -739,7 +739,11 @@ class _PersonDetailState extends State<PersonDetail> {
     if (value == null) return null;
     final trimmed = value.trim();
     if (trimmed.isEmpty || trimmed == "--") return null;
-    return double.tryParse(trimmed);
+    final parsed = double.tryParse(trimmed);
+    if (parsed == null) return null;
+    // API uses 0/0.0 for missing coordinates; treat as absent to avoid huge distances.
+    if (parsed == 0) return null;
+    return parsed;
   }
 
   double? _distanceMeters(double? lat1, double? lon1, double? lat2, double? lon2) {
