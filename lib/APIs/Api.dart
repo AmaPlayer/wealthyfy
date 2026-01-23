@@ -33,7 +33,7 @@ Future<http.Response> _get(Uri uri, {Map<String, String>? headers}) {
 
 
 // -------------------Base URL and endpoints ------------------------------
-String BaseUrl = 'https://iifl-production.onrender.com/';
+String BaseUrl = 'http://13.204.10.62:8112/';
 // ------------------- URL and endpoints ------------------------------
 String loginUrl = "${BaseUrl}user_data/user_login_api";
 String profileUrl = "${BaseUrl}user_data/My_profile_APi";
