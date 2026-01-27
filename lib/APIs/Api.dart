@@ -47,6 +47,7 @@ String userLeaveApplyDetailsUrl = "${BaseUrl}attendance/user_leave_apply_detail_
 String createMeetingUrl = "${BaseUrl}meeting_data/create_meeting_api";
 String userUploadImageUrl = "${BaseUrl}user_data/upload_profile_image?tbl_user_id=1&user_image";
 String userMeetingListUrl = "${BaseUrl}meeting_data/user_meeting_list_api";
+String userEditableMeetingListUrl = "${BaseUrl}meeting_data/user_editable_meeting_list_api";
 String myTeamListUrl = "${BaseUrl}user_data/my_team_API";
 String teamDesignationListUrl = "${BaseUrl}user_data/user_team_designation_list_API";
 String userMeetingDetailUrl = "${BaseUrl}meeting_data/user_meeting_details_api";
@@ -292,6 +293,21 @@ Future<APIResponse> createMeetingListApi( Map<String, dynamic> hashmap)async{
   }  catch (error){
     print("checkk,   $error");
     return APIResponse(message:  error.toString(), status: false);
+  }
+}
+
+Future<APIResponse> editableMeetingListApi(Map<String, dynamic> hashmap) async {
+  try {
+    final response = await _post(Uri.parse(userEditableMeetingListUrl), body: hashmap, headers: authHeaders());
+    var data = jsonDecode(response.body);
+    if (data["status"]) {
+      UserMeetingListModel model = userMeetingListModelFromJson(response.body);
+      return APIResponse(message: data["message"], status: true, data: model);
+    } else {
+      return APIResponse(message: data["message"], status: false);
+    }
+  } catch (error) {
+    return APIResponse(message: error.toString(), status: false);
   }
 }
 

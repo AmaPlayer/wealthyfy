@@ -5,6 +5,7 @@ import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:meeting/helper/ErrorBottomSheet.dart';
 import 'package:meeting/helper/textview.dart';
+import 'package:intl/intl.dart';
 import '../APIs/Api.dart';
 import '../APIs/user_data.dart';
 import '../Models/usermeeting_details_model.dart';
@@ -75,6 +76,9 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
   TextEditingController reference1controller = TextEditingController();
   TextEditingController reference2controller = TextEditingController();
   TextEditingController remarkController = TextEditingController();
+  TextEditingController meetingDateController = TextEditingController();
+  TextEditingController meetingTimeFromController = TextEditingController();
+  TextEditingController meetingTimeToController = TextEditingController();
 
   @override
   void initState() {
@@ -97,6 +101,9 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
     reference2controller.text = widget.userMeetingDetailslist.first.reference2;
     pmsController.text = widget.userMeetingDetailslist.first.pms;
     remarkController.text = widget.userMeetingDetailslist.first.remark;
+    meetingDateController.text = widget.userMeetingDetailslist.first.meetingDate;
+    meetingTimeFromController.text = widget.userMeetingDetailslist.first.meetingTimeSlotFrom;
+    meetingTimeToController.text = widget.userMeetingDetailslist.first.meetingTimeSlotTo;
     _mutualFundSelected =
         widget.userMeetingDetailslist.first.mutualFundPortfolio == "no"
             ? true
@@ -114,6 +121,35 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
   }
 
   bool _isSelected = false;
+
+  Future<void> _pickMeetingDate() async {
+    DateTime initialDate;
+    try {
+      initialDate = DateFormat("dd-MM-yyyy").parse(meetingDateController.text, true);
+    } catch (_) {
+      initialDate = DateTime.now();
+    }
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (picked != null) {
+      meetingDateController.text = DateFormat("dd-MM-yyyy").format(picked);
+    }
+  }
+
+  Future<void> _pickMeetingTime(TextEditingController controller) async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (picked != null) {
+      final dt = DateTime(0, 1, 1, picked.hour, picked.minute);
+      controller.text = DateFormat("hh:mm a").format(dt);
+    }
+  }
 
   void containerselect() {
     setState(() {
@@ -1086,6 +1122,64 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
                 ),
               ),
               addPadding(10, 0),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: meetingDateController,
+                      readOnly: true,
+                      onTap: _pickMeetingDate,
+                      decoration: InputDecoration(
+                        labelText: 'Meeting Date',
+                        labelStyle: TextStyle(fontSize: 14, color: ColorConstants.GREYCOLOR),
+                        border: const OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: ColorConstants.DarkMahroon),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              addPadding(10, 0),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: meetingTimeFromController,
+                      readOnly: true,
+                      onTap: () => _pickMeetingTime(meetingTimeFromController),
+                      decoration: InputDecoration(
+                        labelText: 'Meeting Time From',
+                        labelStyle: TextStyle(fontSize: 14, color: ColorConstants.GREYCOLOR),
+                        border: const OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: ColorConstants.DarkMahroon),
+                        ),
+                      ),
+                    ),
+                  ),
+                  addPadding(0, 10),
+                  Expanded(
+                    child: TextFormField(
+                      controller: meetingTimeToController,
+                      readOnly: true,
+                      onTap: () => _pickMeetingTime(meetingTimeToController),
+                      decoration: InputDecoration(
+                        labelText: 'Meeting Time To',
+                        labelStyle: TextStyle(fontSize: 14, color: ColorConstants.GREYCOLOR),
+                        border: const OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: ColorConstants.DarkMahroon),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               TextFormField(
                 controller: remarkController,
                 maxLines: 4,
@@ -1126,7 +1220,7 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
       "state": userState ?? widget.userMeetingDetailslist.first.city,
       "country": "india",
       "meeting_latitude": userLat ?? widget.userMeetingDetailslist.first.meetingLatitude,
-      "meeting_longitude": userLng ?? widget.userMeetingDetailslist.first.meetingLatitude,
+      "meeting_longitude": userLng ?? widget.userMeetingDetailslist.first.meetingLongitude,
       "mutual_fund_portfolio": _mutualFundSelected ? "no" : "yes",
       "fixed_deposite": _fixedDepositSelected ? "no" : "yes",
       "loan_details": _loanSelected ? "personal" : "home",
@@ -1142,6 +1236,9 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
       "remark": remarkController.text.trim(),
       "full_address": selectLocationController.text,
       "is_meeting_complete": widget.userMeetingDetailslist.first.meetingCheckInStatus.toString(),
+      "meeting_time_slot_from": meetingTimeFromController.text.trim(),
+      "meeting_time_slot_to": meetingTimeToController.text.trim(),
+      "meeting_date": _formatMeetingDate(meetingDateController.text.trim()),
 
     };
     print("update_meeting_api=>$hashMap");
@@ -1161,5 +1258,14 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
         }
       });
     });
+  }
+
+  String _formatMeetingDate(String value) {
+    try {
+      final parsed = DateFormat("dd-MM-yyyy").parseStrict(value);
+      return DateFormat("yyyy-MM-dd").format(parsed);
+    } catch (_) {
+      return value;
+    }
   }
 }

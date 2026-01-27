@@ -13,10 +13,12 @@ import '../../APIs/user_data.dart';
 import '../../Models/dashboard_approvedmeeting_model.dart';
 import '../../Models/usermeeting_List_model.dart';
 import '../../Models/yesterday_user_attendance_model.dart';
+import '../Models/usermeeting_details_model.dart';
 import '../../controller/dashboardcontroller.dart';
 import '../Models/profile_model.dart';
 import '../helper/ErrorBottomSheet.dart';
 import '../main.dart';
+import '../screens/edit_meetingdetails_screen.dart';
 
 class HomeTabController extends GetxController {
   DashboardController dController = Get.find<DashboardController>();
@@ -58,6 +60,9 @@ class HomeTabController extends GetxController {
   RxString selectedEndTime = ''.obs;
   RxList<MeetingDatum> incompleteMeetingList = <MeetingDatum>[].obs;
   RxBool isIncompleteMeetingLoading = false.obs;
+  RxList<MeetingDatum> editableMeetingList = <MeetingDatum>[].obs;
+  RxBool isEditableMeetingLoading = false.obs;
+  RxString editableMeetingError = "".obs;
 
 
   void generateTimeSlots({int intervalMinutes = 60}) {
@@ -80,6 +85,7 @@ class HomeTabController extends GetxController {
     initiateProfileApi();
     initiatUserAttendanceData();
     getUpcomingMeetingData();
+    fetchEditableMeetings();
     refreshIncompleteMeetings();
     generateTimeSlots();
     checkForUpdate();
@@ -218,6 +224,40 @@ class HomeTabController extends GetxController {
         print('EXCEPTION=>${onValue.message}');
       }
     });
+  }
+
+  Future<void> fetchEditableMeetings() async {
+    isEditableMeetingLoading.value = true;
+    editableMeetingError.value = "";
+    var hashMap = {
+      "tbl_user_id": viewLoginDetail!.data.first.tblUserId.toString(),
+    };
+    var onValue = await editableMeetingListApi(hashMap);
+    if (onValue.status) {
+      UserMeetingListModel model = onValue.data;
+      editableMeetingList.value = model.data;
+    } else {
+      editableMeetingList.clear();
+      editableMeetingError.value = onValue.message.toString();
+    }
+    isEditableMeetingLoading.value = false;
+  }
+
+  Future<void> openEditMeeting(String tblMeetingId) async {
+    var hashMap = {
+      "tbl_user_id": viewLoginDetail!.data.first.tblUserId.toString(),
+      "tbl_meeting_id": tblMeetingId,
+    };
+    var onValue = await userMeetingDetailsApi(hashMap);
+    if (onValue.status) {
+      UserMeetingDetailsModel model = onValue.data;
+      Get.to(() => EditMeetingDetailsScreen(
+            userMeetingDetailslist: model.data,
+            tbl_meetingid: tblMeetingId,
+          ));
+    } else {
+      showErrorBottomSheet(onValue.message.toString());
+    }
   }
 
   Future<void> initiateCheckMeetingData(String tblMeetingId) async {
