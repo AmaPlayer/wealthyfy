@@ -1062,6 +1062,10 @@ class MeetingTab extends GetView<HomeTabController> {
                           ? () {}
                           : () {
                               if (controller.formkey.currentState!.validate() && controller.isSelected.value) {
+                                if (controller.selectLocationController.text.trim().isEmpty) {
+                                  showErrorBottomSheet("Please select the location.");
+                                  return;
+                                }
                                 if (controller.selectedStartTime.toString() != "") {
                                   controller.initiateCreateMeetingData();
                                 } else {
