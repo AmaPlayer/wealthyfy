@@ -50,6 +50,7 @@ class HomeTabController extends GetxController {
   TextEditingController reference2controller = TextEditingController();
   TextEditingController remarkController = TextEditingController();
   TextEditingController selectLocationController = TextEditingController();
+  TextEditingController meetingDateController = TextEditingController();
   var defaultUserLat, defaultUserLong;
   RxList<MyProfileDatum> profileData = <MyProfileDatum>[].obs;
   var meetingLoadingMap = <String, bool>{}.obs;
@@ -85,7 +86,6 @@ class HomeTabController extends GetxController {
     initiateProfileApi();
     initiatUserAttendanceData();
     getUpcomingMeetingData();
-    fetchEditableMeetings();
     refreshIncompleteMeetings();
     generateTimeSlots();
     checkForUpdate();
@@ -554,6 +554,7 @@ class HomeTabController extends GetxController {
       "full_address": selectLocationController.text,
       "meeting_time_slot_from": selectedStartTime.toString(),
       "meeting_time_slot_to": selectedEndTime.toString(),
+      "meeting_date": _formatMeetingDate(meetingDateController.text.trim()),
     };
     print("SUBMIT_MEETING_API=>$hashMap");
     createMeetingApi(hashMap).then((onValue) {
@@ -570,6 +571,7 @@ class HomeTabController extends GetxController {
         clientNameController.clear();
         customerIdController.clear();
         selectLocationController.clear();
+        meetingDateController.clear();
         dController.onItemTapped(0);
         showSuccessBottomSheet(onValue.message);
         isCreateMeetingLoading.value = false;
@@ -584,6 +586,15 @@ class HomeTabController extends GetxController {
       showErrorBottomSheet(error.toString());
       isCreateMeetingLoading.value = false;
     });
+  }
+
+  String _formatMeetingDate(String value) {
+    try {
+      final parsed = DateFormat("dd-MM-yyyy").parseStrict(value);
+      return DateFormat("yyyy-MM-dd").format(parsed);
+    } catch (_) {
+      return value;
+    }
   }
 
   Future<void> getLocation() async {

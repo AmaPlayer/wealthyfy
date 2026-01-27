@@ -8,6 +8,7 @@ import 'package:meeting/controller/button_controller/custombuttom.dart';
 import 'package:meeting/helper/textview.dart';
 import 'package:meeting/screens/notification_sreen.dart';
 import 'package:meeting/screens/meeting_minutes_screen.dart';
+import 'package:intl/intl.dart';
 
 class MeetingTab extends GetView<HomeTabController> {
   const MeetingTab({super.key});
@@ -116,6 +117,26 @@ class MeetingTab extends GetView<HomeTabController> {
         ],
       ),
     );
+  }
+
+  Future<void> _pickMeetingDate(BuildContext context) async {
+    DateTime initialDate;
+    try {
+      initialDate =
+          DateFormat("dd-MM-yyyy").parse(controller.meetingDateController.text, true);
+    } catch (_) {
+      initialDate = DateTime.now();
+    }
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (picked != null) {
+      controller.meetingDateController.text =
+          DateFormat("dd-MM-yyyy").format(picked);
+    }
   }
 
   products1() => Stack(children: [
@@ -825,6 +846,35 @@ class MeetingTab extends GetView<HomeTabController> {
                           color: ColorConstants.DarkMahroon))),
             ),
             addPadding(10, 0),
+            TextFormField(
+              controller: controller.meetingDateController,
+              readOnly: true,
+              onTap: () => _pickMeetingDate(context),
+              decoration: InputDecoration(
+                labelText: 'Meeting Date',
+                labelStyle: const TextStyle(fontSize: 14, color: ColorConstants.GREYCOLOR),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: ColorConstants.WHITECOLOR),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(
+                    color: ColorConstants.DarkMahroon,
+                  ),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                    vertical: 10.0, horizontal: 12.0),
+                isDense: true,
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'This field is required';
+                }
+                return null;
+              },
+            ),
+            addPadding(10, 0),
             ElevatedButton(
               onPressed: () {
                 showTimeSlotDialog(
@@ -1064,6 +1114,10 @@ class MeetingTab extends GetView<HomeTabController> {
                               if (controller.formkey.currentState!.validate() && controller.isSelected.value) {
                                 if (controller.selectLocationController.text.trim().isEmpty) {
                                   showErrorBottomSheet("Please select the location.");
+                                  return;
+                                }
+                                if (controller.meetingDateController.text.trim().isEmpty) {
+                                  showErrorBottomSheet("Please select the meeting date.");
                                   return;
                                 }
                                 if (controller.selectedStartTime.toString() != "") {

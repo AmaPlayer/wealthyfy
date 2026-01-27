@@ -6,10 +6,12 @@ import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.da
 import 'package:meeting/helper/ErrorBottomSheet.dart';
 import 'package:meeting/helper/textview.dart';
 import 'package:intl/intl.dart';
+import 'package:get/get.dart';
 import '../APIs/Api.dart';
 import '../APIs/user_data.dart';
 import '../Models/usermeeting_details_model.dart';
 import '../controller/button_controller/custombuttom.dart';
+import '../controller/HomeTabController.dart';
 import '../helper/colors.dart';
 import 'bottom_screen.dart';
 
@@ -198,6 +200,8 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
                           addPadding(15, 0),
                           products2(),],),
                       ),
+                      addPadding(15, 0),
+                      _meetingScheduleSection(),
                       addPadding(15, 0),
                       Row(
                         children: [
@@ -1121,7 +1125,49 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
                   ],
                 ),
               ),
-              addPadding(10, 0),
+            ],
+          ),
+        ),
+      ]);
+
+  _meetingScheduleSection() => Stack(children: [
+        Container(
+          margin: const EdgeInsets.only(
+            left: 10,
+            right: 10,
+          ),
+          height: 10,
+          decoration: const BoxDecoration(
+              color: ColorConstants.GREENCOLOR,
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20), topLeft: Radius.circular(20))),
+          width: double.infinity,
+        ),
+        Container(
+          margin: const EdgeInsets.only(left: 5, right: 5, top: 5),
+          height: 10,
+          decoration: const BoxDecoration(
+              color: ColorConstants.DarkMahroon,
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20), topLeft: Radius.circular(20))),
+          width: double.infinity,
+        ),
+        Container(
+          margin: const EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.all(10),
+          width: double.infinity,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: const Border(
+                  left: BorderSide(color: ColorConstants.DarkMahroon),
+                  right: BorderSide(color: ColorConstants.DarkMahroon),
+                  bottom: BorderSide(color: ColorConstants.DarkMahroon)),
+              boxShadow: const [
+                BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)
+              ],
+              borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            children: [
               Row(
                 children: [
                   Expanded(
@@ -1180,6 +1226,7 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
                   ),
                 ],
               ),
+              addPadding(10, 0),
               TextFormField(
                 controller: remarkController,
                 maxLines: 4,
@@ -1209,6 +1256,10 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
       ]);
 
   initiateUpdateMeetingData() {
+    final meetingDate = meetingDateController.text.trim();
+    final meetingTimeFrom = meetingTimeFromController.text.trim();
+    final meetingTimeTo = meetingTimeToController.text.trim();
+    final meetingTime = _buildMeetingTime(meetingTimeFrom, meetingTimeTo);
     var hashMap = {
       "tbl_user_id": viewLoginDetail!.data.first.tblUserId.toString(),
       "tbl_meeting_id": widget.tbl_meetingid,
@@ -1236,10 +1287,10 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
       "remark": remarkController.text.trim(),
       "full_address": selectLocationController.text,
       "is_meeting_complete": widget.userMeetingDetailslist.first.meetingCheckInStatus.toString(),
-      "meeting_time_slot_from": meetingTimeFromController.text.trim(),
-      "meeting_time_slot_to": meetingTimeToController.text.trim(),
-      "meeting_date": _formatMeetingDate(meetingDateController.text.trim()),
-
+      "meeting_time_slot_from": meetingTimeFrom,
+      "meeting_time_slot_to": meetingTimeTo,
+      "meeting_time": meetingTime,
+      "meeting_date": _formatMeetingDate(meetingDate),
     };
     print("update_meeting_api=>$hashMap");
     updateMeetingApi(hashMap).then((onValue) {
@@ -1247,6 +1298,10 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
       setState(() {
         if (onValue.status) {
          showSuccessBottomSheet(onValue.message);
+         final homeController = Get.isRegistered<HomeTabController>()
+             ? Get.find<HomeTabController>()
+             : null;
+         homeController?.getUpcomingMeetingData();
          Navigator.push(
              context,
              MaterialPageRoute(
@@ -1258,6 +1313,19 @@ class _EditMeetingDetailsScreenState extends State<EditMeetingDetailsScreen> {
         }
       });
     });
+  }
+
+  String _buildMeetingTime(String from, String to) {
+    if (from.isEmpty && to.isEmpty) {
+      return "";
+    }
+    if (from.isEmpty) {
+      return to;
+    }
+    if (to.isEmpty) {
+      return from;
+    }
+    return "$from - $to";
   }
 
   String _formatMeetingDate(String value) {

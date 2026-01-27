@@ -101,8 +101,6 @@ class HomeTab extends GetView<HomeTabController> {
                                 addPadding(15, 0),
                                 _todayUpcoming(),
                                 addPadding(15, 0),
-                                _editableMeetings(),
-                                addPadding(15, 0),
                                 _myLeaveUi(),
                                 addPadding(15, 0),
                                 _historyUi(),
@@ -142,8 +140,6 @@ class HomeTab extends GetView<HomeTabController> {
                                 _teamMeetingUi(),
                                 addPadding(15, 0),
                                 _todayUpcoming(),
-                                addPadding(15, 0),
-                                _editableMeetings(),
                                 addPadding(15, 0),
                                 _myLeaveUi(),
                                 addPadding(15, 0),
@@ -1175,84 +1171,6 @@ class HomeTab extends GetView<HomeTabController> {
       ]))
               ])),
         ]);
-
-  _editableMeetings() => Obx(() {
-        if (controller.isEditableMeetingLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: ColorConstants.DarkMahroon,
-            ),
-          );
-        }
-
-        if (controller.editableMeetingList.isEmpty) {
-          return Container(
-            margin: const EdgeInsets.only(top: 5),
-            padding: const EdgeInsets.all(15),
-            width: double.infinity,
-            decoration: BoxDecoration(color: ColorConstants.WHITECOLOR, borderRadius: BorderRadius.circular(15)),
-            child: headingText(
-              title: 'No editable meetings',
-              color: ColorConstants.GREYCOLOR,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          );
-        }
-
-        return Container(
-          padding: const EdgeInsets.all(10),
-          width: double.infinity,
-          decoration: BoxDecoration(color: ColorConstants.WHITECOLOR, borderRadius: BorderRadius.circular(15)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              headingText(
-                title: 'Editable meetings (last 1 day)',
-                fontWeight: FontWeight.bold,
-                color: ColorConstants.DarkMahroon,
-                fontSize: 16,
-              ),
-              addPadding(10, 0),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: controller.editableMeetingList.length,
-                itemBuilder: (context, index) {
-                  final meeting = controller.editableMeetingList[index];
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: ColorConstants.WHITECOLOR,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: ColorConstants.GREYCOLOR),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: headingFullText(
-                            title: '${meeting.clientName}\n${meeting.meetingDate} ${meeting.meetingTime}',
-                            color: ColorConstants.BLACKCOLOR,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            await controller.openEditMeeting(meeting.tblMeetingId);
-                          },
-                          icon: const Icon(Icons.edit, color: ColorConstants.DarkMahroon),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        );
-      });
 
   onKillApp(BuildContext context) {
     if (controller.dController.selectedIndex == 0) {
