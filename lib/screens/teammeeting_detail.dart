@@ -19,7 +19,8 @@ class PersonDetail extends StatefulWidget {
   final int tabPosition;
   final DashboardController dController = Get.find<DashboardController>();
 
- PersonDetail({super.key, required this.tbl_meetingID, required this.tabPosition});
+  PersonDetail(
+      {super.key, required this.tbl_meetingID, required this.tabPosition});
 
   @override
   State<PersonDetail> createState() => _PersonDetailState();
@@ -28,12 +29,20 @@ class PersonDetail extends StatefulWidget {
 class _PersonDetailState extends State<PersonDetail> {
   bool isLoading = true;
   List<MeetingDetailDatum> userMeetingDetailsList = [];
+  final TextEditingController _authorityRemarkController =
+      TextEditingController();
 
   @override
   void initState() {
     super.initState();
- print("check tab index${widget.tabPosition}");
+    print("check tab index${widget.tabPosition}");
     initiateMeetingDeTail();
+  }
+
+  @override
+  void dispose() {
+    _authorityRemarkController.dispose();
+    super.dispose();
   }
 
   @override
@@ -41,9 +50,11 @@ class _PersonDetailState extends State<PersonDetail> {
     return isLoading
         ? Scaffold(
             appBar: AppBar(
-            centerTitle: true,
-            title: headingText(title: 'Meeting Detail'),
-          ),body: Center(child: CircularProgressIndicator()),)
+              centerTitle: true,
+              title: headingText(title: 'Meeting Detail'),
+            ),
+            body: Center(child: CircularProgressIndicator()),
+          )
         : userMeetingDetailsList.isEmpty
             ? Scaffold(
                 appBar: AppBar(
@@ -60,97 +71,124 @@ class _PersonDetailState extends State<PersonDetail> {
                 ),
               )
             : Scaffold(
-            appBar: userMeetingDetailsList.first.meetingStatus != 'pending'
-                ? AppBar(
-                    centerTitle: true,
-                    title: headingText(title: 'Meeting Detail'),
-                  )
-                : AppBar(
-                    centerTitle: true,
-                    title: headingText(title: 'Meeting Detail'),
-                    actions: widget.tabPosition == 0
-                        ? [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 1),
-                              child: IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => EditMeetingDetailsScreen(
-                                                  userMeetingDetailslist: userMeetingDetailsList,
-                                                  tbl_meetingid: userMeetingDetailsList.first.tblMeetingId,
-                                                )));
-                                  },
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    color: ColorConstants.WHITECOLOR,
-                                  )),
-                            )
-                          ]
-                        : [],
-                  ),
-            body: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _container1(),
-                          _container2(),
-                          _container3(),
-                          _container4(),
-                        ],
-                      ),
-                      addPadding(50, 0),
-                      widget.tabPosition == 0
-                          ? Padding(
-                              padding: const EdgeInsets.only(left: 20, right: 20),
-                              child: userMeetingDetailsList.first.meetingStatus == "approved"
-                                  ? CustomButton(
-                                      text: userMeetingDetailsList.first.meetingStatus.capitalizeFirst.toString(),
+                appBar: userMeetingDetailsList.first.meetingStatus != 'pending'
+                    ? AppBar(
+                        centerTitle: true,
+                        title: headingText(title: 'Meeting Detail'),
+                      )
+                    : AppBar(
+                        centerTitle: true,
+                        title: headingText(title: 'Meeting Detail'),
+                        actions: widget.tabPosition == 0
+                            ? [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 1),
+                                  child: IconButton(
                                       onPressed: () {
-                                        initiateMeetingApprovedRejected("approved");
-                                        Navigator.pop(context);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditMeetingDetailsScreen(
+                                                      userMeetingDetailslist:
+                                                          userMeetingDetailsList,
+                                                      tbl_meetingid:
+                                                          userMeetingDetailsList
+                                                              .first
+                                                              .tblMeetingId,
+                                                    )));
                                       },
-                                      color: ColorConstants.GREENCOLOR,
-                                    )
-                                  : userMeetingDetailsList.first.meetingStatus == "rejected"
+                                      icon: const Icon(
+                                        Icons.edit,
+                                        color: ColorConstants.WHITECOLOR,
+                                      )),
+                                )
+                              ]
+                            : [],
+                      ),
+                body: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _container1(),
+                              _container2(),
+                              _container3(),
+                              _container4(),
+                            ],
+                          ),
+                          addPadding(50, 0),
+                          widget.tabPosition == 0
+                              ? Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 20),
+                                  child: userMeetingDetailsList
+                                              .first.meetingStatus ==
+                                          "approved"
                                       ? CustomButton(
-                                          text: userMeetingDetailsList.first.meetingStatus.capitalizeFirst.toString(),
-                                          onPressed: () {
-                                            initiateMeetingApprovedRejected("rejected");
-                                            Navigator.pop(context);
-                                          },
-                                          color: ColorConstants.REDCOLOR,
+                                          text: userMeetingDetailsList.first
+                                              .meetingStatus.capitalizeFirst
+                                              .toString(),
+                                          onPressed: () {},
+                                          color: ColorConstants.GREENCOLOR,
                                         )
-                                      : CustomButton(
-                                          text: userMeetingDetailsList.first.meetingStatus.capitalizeFirst.toString(),
-                                          color: ColorConstants.GREYCOLOR,
-                                          onPressed: () {
-                                            print("yessssss");
-                                          },
-                                        ),
-                            )
-                          : userMeetingDetailsList.first.meetingStatus != "pending"
-                              ? CustomButton(
-                                  text: userMeetingDetailsList.first.meetingStatus.capitalizeFirst.toString(),
-                                  onPressed: () {
-                                  },
-                                  color:userMeetingDetailsList.first.meetingStatus == "pending"?ColorConstants.GREYCOLOR: userMeetingDetailsList.first.meetingStatus == "approved"?ColorConstants.GREENCOLOR:ColorConstants.REDCOLOR,
-                                ).paddingOnly(bottom: 10)
+                                      : userMeetingDetailsList
+                                                  .first.meetingStatus ==
+                                              "rejected"
+                                          ? CustomButton(
+                                              text: userMeetingDetailsList.first
+                                                  .meetingStatus.capitalizeFirst
+                                                  .toString(),
+                                              onPressed: () {
+                                                initiateMeetingApprovedRejected(
+                                                    "rejected");
+                                                Navigator.pop(context);
+                                              },
+                                              color: ColorConstants.REDCOLOR,
+                                            )
+                                          : CustomButton(
+                                              text: userMeetingDetailsList.first
+                                                  .meetingStatus.capitalizeFirst
+                                                  .toString(),
+                                              color: ColorConstants.GREYCOLOR,
+                                              onPressed: () {
+                                                print("yessssss");
+                                              },
+                                            ),
+                                )
+                              : userMeetingDetailsList.first.meetingStatus !=
+                                      "pending"
+                                  ? CustomButton(
+                                      text: userMeetingDetailsList
+                                          .first.meetingStatus.capitalizeFirst
+                                          .toString(),
+                                      onPressed: () {},
+                                      color: userMeetingDetailsList
+                                                  .first.meetingStatus ==
+                                              "pending"
+                                          ? ColorConstants.GREYCOLOR
+                                          : userMeetingDetailsList
+                                                      .first.meetingStatus ==
+                                                  "approved"
+                                              ? ColorConstants.GREENCOLOR
+                                              : ColorConstants.REDCOLOR,
+                                    ).paddingOnly(bottom: 10)
                                   : Row(
                                       children: [
                                         Expanded(
                                           child: Padding(
-                                            padding: const EdgeInsets.only(left: 20, right: 20),
+                                            padding: const EdgeInsets.only(
+                                                left: 20, right: 20),
                                             child: CustomButton(
                                               text: 'Reject',
                                               onPressed: () {
-                                                initiateMeetingApprovedRejected("rejected",);
+                                                initiateMeetingApprovedRejected(
+                                                  "rejected",
+                                                );
                                                 Navigator.pop(context);
                                               },
                                               color: Colors.red,
@@ -159,12 +197,12 @@ class _PersonDetailState extends State<PersonDetail> {
                                         ),
                                         Expanded(
                                           child: Padding(
-                                            padding: const EdgeInsets.only(left: 20, right: 20),
+                                            padding: const EdgeInsets.only(
+                                                left: 20, right: 20),
                                             child: CustomButton(
                                               text: 'Approve',
-                                              onPressed: () {
-                                                initiateMeetingApprovedRejected("approved");
-                                                Navigator.pop(context);
+                                              onPressed: () async {
+                                                await _promptApproveWithRemark();
                                               },
                                               color: Colors.green,
                                             ),
@@ -172,12 +210,12 @@ class _PersonDetailState extends State<PersonDetail> {
                                         )
                                       ],
                                     ).paddingOnly(bottom: 20)
-                    ],
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );
+              );
   }
 
   _container1() => Container(
@@ -187,7 +225,9 @@ class _PersonDetailState extends State<PersonDetail> {
         decoration: BoxDecoration(
             color: ColorConstants.WHITECOLOR,
             border: Border.all(color: ColorConstants.DarkMahroon),
-            boxShadow: const [BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)],
+            boxShadow: const [
+              BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)
+            ],
             borderRadius: BorderRadius.circular(10)),
         child: Column(
           children: [
@@ -196,9 +236,13 @@ class _PersonDetailState extends State<PersonDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 headingText(
-                    title: 'Name:', color: ColorConstants.DarkMahroon, fontSize: 14, fontWeight: FontWeight.w500),
+                    title: 'Name:',
+                    color: ColorConstants.DarkMahroon,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500),
                 headingText(
-                    title: "${userMeetingDetailsList.first.fullName.capitalizeFirst.toString()} (${userMeetingDetailsList.first.designationAbbr.capitalizeFirst.toString()})",
+                    title:
+                        "${userMeetingDetailsList.first.fullName.capitalizeFirst.toString()} (${userMeetingDetailsList.first.designationAbbr.capitalizeFirst.toString()})",
                     color: ColorConstants.BLACKCOLOR,
                     fontSize: 14,
                     fontWeight: FontWeight.w500)
@@ -209,9 +253,14 @@ class _PersonDetailState extends State<PersonDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 headingText(
-                    title: 'Client Name:', color: ColorConstants.DarkMahroon, fontSize: 14, fontWeight: FontWeight.w500),
+                    title: 'Client Name:',
+                    color: ColorConstants.DarkMahroon,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500),
                 headingText(
-                    title: userMeetingDetailsList.first.clientName.capitalizeFirst.toString(),
+                    title: userMeetingDetailsList
+                        .first.clientName.capitalizeFirst
+                        .toString(),
                     color: ColorConstants.BLACKCOLOR,
                     fontSize: 14,
                     fontWeight: FontWeight.w500)
@@ -222,7 +271,10 @@ class _PersonDetailState extends State<PersonDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 headingText(
-                    title: 'Email:', color: ColorConstants.DarkMahroon, fontSize: 14, fontWeight: FontWeight.w500),
+                    title: 'Email:',
+                    color: ColorConstants.DarkMahroon,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500),
                 headingText(
                     title: userMeetingDetailsList.first.clientEmail,
                     color: ColorConstants.BLACKCOLOR,
@@ -235,16 +287,20 @@ class _PersonDetailState extends State<PersonDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 headingText(
-                    title: 'Status:', color: ColorConstants.DarkMahroon, fontSize: 14, fontWeight: FontWeight.w500),
+                    title: 'Status:',
+                    color: ColorConstants.DarkMahroon,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500),
                 headingText(
-                    title: userMeetingDetailsList.first.meetingStatus.capitalizeFirst.toString(),
+                    title: userMeetingDetailsList
+                        .first.meetingStatus.capitalizeFirst
+                        .toString(),
                     color: ColorConstants.BLACKCOLOR,
                     fontSize: 14,
                     fontWeight: FontWeight.w500)
               ],
             ),
             addPadding(10, 0),
-
             Row(
               children: [
                 const Icon(
@@ -256,21 +312,21 @@ class _PersonDetailState extends State<PersonDetail> {
                 SizedBox(
                   width: 280,
                   child: headingFullText(
-                      title:"Meeting Slot: ${userMeetingDetailsList.first.meetingTimeSlotFrom}${userMeetingDetailsList.first.meetingTimeSlotTo}".toString(),
+                      title:
+                          "Meeting Slot: ${userMeetingDetailsList.first.meetingTimeSlotFrom}${userMeetingDetailsList.first.meetingTimeSlotTo}"
+                              .toString(),
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: ColorConstants.BLACKCOLOR),
                 ),
-
               ],
             ),
-
             addPadding(10, 0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     _openMap(userMeetingDetailsList.first.fullAddress);
                   },
                   child: Row(
@@ -284,7 +340,8 @@ class _PersonDetailState extends State<PersonDetail> {
                       SizedBox(
                         width: 280,
                         child: headingFullText(
-                            title: "Meeting Location: ${userMeetingDetailsList.first.fullAddress.capitalizeFirst}",
+                            title:
+                                "Meeting Location: ${userMeetingDetailsList.first.fullAddress.capitalizeFirst}",
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                             color: ColorConstants.BLACKCOLOR),
@@ -299,8 +356,9 @@ class _PersonDetailState extends State<PersonDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 InkWell(
-                  onTap: (){
-                    _openMap(userMeetingDetailsList.first.meetingCheckInFullAddress);
+                  onTap: () {
+                    _openMap(
+                        userMeetingDetailsList.first.meetingCheckInFullAddress);
                   },
                   child: Row(
                     children: [
@@ -313,16 +371,15 @@ class _PersonDetailState extends State<PersonDetail> {
                       SizedBox(
                         width: 280,
                         child: headingFullText(
-                            title: "check-in Location: ${userMeetingDetailsList.first.meetingCheckInFullAddress.capitalizeFirst}",
+                            title:
+                                "check-in Location: ${userMeetingDetailsList.first.meetingCheckInFullAddress.capitalizeFirst}",
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                             color: ColorConstants.BLACKCOLOR),
                       ),
-
                     ],
                   ),
                 ),
-
               ],
             ),
             addPadding(10, 0),
@@ -337,12 +394,12 @@ class _PersonDetailState extends State<PersonDetail> {
                 SizedBox(
                   width: 280,
                   child: headingFullText(
-                      title:"Check-in Timestamp: ${_safeText(userMeetingDetailsList.first.meetingCheckInDateTime)}",
+                      title:
+                          "Check-in Timestamp: ${_safeText(userMeetingDetailsList.first.meetingCheckInDateTime)}",
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: ColorConstants.BLACKCOLOR),
                 ),
-
               ],
             ),
             addPadding(15, 0),
@@ -350,8 +407,9 @@ class _PersonDetailState extends State<PersonDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 InkWell(
-                  onTap: (){
-                    _openMap(userMeetingDetailsList.first.meetingCheckOutFullAddress);
+                  onTap: () {
+                    _openMap(userMeetingDetailsList
+                        .first.meetingCheckOutFullAddress);
                   },
                   child: Row(
                     children: [
@@ -364,16 +422,15 @@ class _PersonDetailState extends State<PersonDetail> {
                       SizedBox(
                         width: 280,
                         child: headingFullText(
-                            title: "Check-out Location: ${_safeText(userMeetingDetailsList.first.meetingCheckOutFullAddress).capitalizeFirst}",
+                            title:
+                                "Check-out Location: ${_safeText(userMeetingDetailsList.first.meetingCheckOutFullAddress).capitalizeFirst}",
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                             color: ColorConstants.BLACKCOLOR),
                       ),
-
                     ],
                   ),
                 ),
-
               ],
             ),
             addPadding(10, 0),
@@ -388,15 +445,14 @@ class _PersonDetailState extends State<PersonDetail> {
                 SizedBox(
                   width: 280,
                   child: headingFullText(
-                      title:"Check-out Timestamp: ${_safeText(userMeetingDetailsList.first.meetingCheckOutDateTime)}",
+                      title:
+                          "Check-out Timestamp: ${_safeText(userMeetingDetailsList.first.meetingCheckOutDateTime)}",
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: ColorConstants.BLACKCOLOR),
                 ),
-
               ],
             ),
-
             addPadding(15, 0),
             Row(
               children: [
@@ -413,16 +469,27 @@ class _PersonDetailState extends State<PersonDetail> {
                     color: ColorConstants.BLACKCOLOR)
               ],
             ),
-            headingText(title: 'Remark:', color: ColorConstants.DarkMahroon, fontSize: 18, fontWeight: FontWeight.w600),
+            headingText(
+                title: 'Remark:',
+                color: ColorConstants.DarkMahroon,
+                fontSize: 18,
+                fontWeight: FontWeight.w600),
             headingFullText(
-                title: userMeetingDetailsList.first.remark.capitalizeFirst.toString(),
+                title: userMeetingDetailsList.first.remark.capitalizeFirst
+                    .toString(),
                 color: ColorConstants.BLACKCOLOR,
                 fontSize: 13,
                 fontWeight: FontWeight.w500),
             addPadding(10, 0),
-            headingText(title: 'Agenda:', color: ColorConstants.DarkMahroon, fontSize: 18, fontWeight: FontWeight.w600),
+            headingText(
+                title: 'Agenda:',
+                color: ColorConstants.DarkMahroon,
+                fontSize: 18,
+                fontWeight: FontWeight.w600),
             headingFullText(
-                title: _safeText(userMeetingDetailsList.first.meetingAgenda).capitalizeFirst.toString(),
+                title: _safeText(userMeetingDetailsList.first.meetingAgenda)
+                    .capitalizeFirst
+                    .toString(),
                 color: ColorConstants.BLACKCOLOR,
                 fontSize: 13,
                 fontWeight: FontWeight.w500),
@@ -438,7 +505,9 @@ class _PersonDetailState extends State<PersonDetail> {
         decoration: BoxDecoration(
             color: ColorConstants.WHITECOLOR,
             border: Border.all(color: ColorConstants.DarkMahroon),
-            boxShadow: const [BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)],
+            boxShadow: const [
+              BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)
+            ],
             borderRadius: BorderRadius.circular(10)),
         child: Column(
           children: [
@@ -490,7 +559,9 @@ class _PersonDetailState extends State<PersonDetail> {
                     fontWeight: FontWeight.w500),
                 Flexible(
                   child: headingFullText(
-                      title: userMeetingDetailsList.first.familyDetails.capitalizeFirst.toString(),
+                      title: userMeetingDetailsList
+                          .first.familyDetails.capitalizeFirst
+                          .toString(),
                       color: ColorConstants.BLACKCOLOR,
                       fontSize: 14,
                       fontWeight: FontWeight.w500),
@@ -508,7 +579,9 @@ class _PersonDetailState extends State<PersonDetail> {
                     fontWeight: FontWeight.w500),
                 Flexible(
                   child: headingFullText(
-                      title: userMeetingDetailsList.first.stockPortfolioWithUs.capitalizeFirst.toString(),
+                      title: userMeetingDetailsList
+                          .first.stockPortfolioWithUs.capitalizeFirst
+                          .toString(),
                       color: ColorConstants.BLACKCOLOR,
                       fontSize: 14,
                       fontWeight: FontWeight.w500),
@@ -526,7 +599,9 @@ class _PersonDetailState extends State<PersonDetail> {
                     fontWeight: FontWeight.w500),
                 Flexible(
                   child: headingFullText(
-                      title: userMeetingDetailsList.first.stockPortfolioWithOtherBroker.capitalizeFirst.toString(),
+                      title: userMeetingDetailsList
+                          .first.stockPortfolioWithOtherBroker.capitalizeFirst
+                          .toString(),
                       color: ColorConstants.BLACKCOLOR,
                       fontSize: 14,
                       fontWeight: FontWeight.w500),
@@ -543,7 +618,9 @@ class _PersonDetailState extends State<PersonDetail> {
                     fontSize: 14,
                     fontWeight: FontWeight.w500),
                 headingText(
-                    title: userMeetingDetailsList.first.mutualFundPortfolio.capitalizeFirst.toString(),
+                    title: userMeetingDetailsList
+                        .first.mutualFundPortfolio.capitalizeFirst
+                        .toString(),
                     color: ColorConstants.BLACKCOLOR,
                     fontSize: 14,
                     fontWeight: FontWeight.w500)
@@ -559,7 +636,9 @@ class _PersonDetailState extends State<PersonDetail> {
                     fontSize: 14,
                     fontWeight: FontWeight.w500),
                 headingText(
-                    title: userMeetingDetailsList.first.fixedDeposite.capitalizeFirst.toString(),
+                    title: userMeetingDetailsList
+                        .first.fixedDeposite.capitalizeFirst
+                        .toString(),
                     color: ColorConstants.BLACKCOLOR,
                     fontSize: 14,
                     fontWeight: FontWeight.w500)
@@ -572,8 +651,12 @@ class _PersonDetailState extends State<PersonDetail> {
 
   _container4() {
     final meeting = userMeetingDetailsList.first;
-    final cp0Lat = _parseCoord(meeting.meetingCheckInLatitude.isNotEmpty ? meeting.meetingCheckInLatitude : meeting.meetingLatitude);
-    final cp0Lng = _parseCoord(meeting.meetingCheckInLongitude.isNotEmpty ? meeting.meetingCheckInLongitude : meeting.meetingLongitude);
+    final cp0Lat = _parseCoord(meeting.meetingCheckInLatitude.isNotEmpty
+        ? meeting.meetingCheckInLatitude
+        : meeting.meetingLatitude);
+    final cp0Lng = _parseCoord(meeting.meetingCheckInLongitude.isNotEmpty
+        ? meeting.meetingCheckInLongitude
+        : meeting.meetingLongitude);
     final cp1Lat = _parseCoord(meeting.checkpoint1Latitude);
     final cp1Lng = _parseCoord(meeting.checkpoint1Longitude);
     final cp2Lat = _parseCoord(meeting.checkpoint2Latitude);
@@ -590,12 +673,18 @@ class _PersonDetailState extends State<PersonDetail> {
       decoration: BoxDecoration(
           color: ColorConstants.WHITECOLOR,
           border: Border.all(color: ColorConstants.DarkMahroon),
-          boxShadow: const [BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)],
+          boxShadow: const [
+            BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)
+          ],
           borderRadius: BorderRadius.circular(10)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          headingText(title: 'Checkpoints', color: ColorConstants.DarkMahroon, fontSize: 16, fontWeight: FontWeight.w600),
+          headingText(
+              title: 'Checkpoints',
+              color: ColorConstants.DarkMahroon,
+              fontSize: 16,
+              fontWeight: FontWeight.w600),
           addPadding(10, 0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -746,14 +835,18 @@ class _PersonDetailState extends State<PersonDetail> {
     return parsed;
   }
 
-  double? _distanceMeters(double? lat1, double? lon1, double? lat2, double? lon2) {
-    if (lat1 == null || lon1 == null || lat2 == null || lon2 == null) return null;
+  double? _distanceMeters(
+      double? lat1, double? lon1, double? lat2, double? lon2) {
+    if (lat1 == null || lon1 == null || lat2 == null || lon2 == null)
+      return null;
     const earthRadius = 6371000.0;
     final dLat = _degToRad(lat2 - lat1);
     final dLon = _degToRad(lon2 - lon1);
     final a = (math.sin(dLat / 2) * math.sin(dLat / 2)) +
-        math.cos(_degToRad(lat1)) * math.cos(_degToRad(lat2)) *
-            math.sin(dLon / 2) * math.sin(dLon / 2);
+        math.cos(_degToRad(lat1)) *
+            math.cos(_degToRad(lat2)) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     return earthRadius * c;
   }
@@ -775,7 +868,9 @@ class _PersonDetailState extends State<PersonDetail> {
         decoration: BoxDecoration(
             color: ColorConstants.WHITECOLOR,
             border: Border.all(color: ColorConstants.DarkMahroon),
-            boxShadow: const [BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)],
+            boxShadow: const [
+              BoxShadow(blurRadius: 1, color: ColorConstants.GREYCOLOR)
+            ],
             borderRadius: BorderRadius.circular(10)),
         child: Column(
           children: [
@@ -788,7 +883,9 @@ class _PersonDetailState extends State<PersonDetail> {
                     fontSize: 14,
                     fontWeight: FontWeight.w500),
                 headingText(
-                    title: userMeetingDetailsList.first.loanDetails.capitalizeFirst.toString(),
+                    title: userMeetingDetailsList
+                        .first.loanDetails.capitalizeFirst
+                        .toString(),
                     color: ColorConstants.BLACKCOLOR,
                     fontSize: 14,
                     fontWeight: FontWeight.w500)
@@ -799,9 +896,14 @@ class _PersonDetailState extends State<PersonDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 headingText(
-                    title: 'Insurance:', color: ColorConstants.DarkMahroon, fontSize: 14, fontWeight: FontWeight.w500),
+                    title: 'Insurance:',
+                    color: ColorConstants.DarkMahroon,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500),
                 headingText(
-                    title: userMeetingDetailsList.first.insurance.capitalizeFirst.toString(),
+                    title: userMeetingDetailsList
+                        .first.insurance.capitalizeFirst
+                        .toString(),
                     color: ColorConstants.BLACKCOLOR,
                     fontSize: 14,
                     fontWeight: FontWeight.w500)
@@ -818,7 +920,9 @@ class _PersonDetailState extends State<PersonDetail> {
                     fontWeight: FontWeight.w500),
                 Flexible(
                   child: headingFullText(
-                      title: userMeetingDetailsList.first.reference1.capitalizeFirst.toString(),
+                      title: userMeetingDetailsList
+                          .first.reference1.capitalizeFirst
+                          .toString(),
                       color: ColorConstants.BLACKCOLOR,
                       fontSize: 14,
                       fontWeight: FontWeight.w500),
@@ -836,7 +940,9 @@ class _PersonDetailState extends State<PersonDetail> {
                     fontWeight: FontWeight.w500),
                 Flexible(
                   child: headingFullText(
-                      title: userMeetingDetailsList.first.reference2.capitalizeFirst.toString(),
+                      title: userMeetingDetailsList
+                          .first.reference2.capitalizeFirst
+                          .toString(),
                       color: ColorConstants.BLACKCOLOR,
                       fontSize: 14,
                       fontWeight: FontWeight.w500),
@@ -848,9 +954,13 @@ class _PersonDetailState extends State<PersonDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 headingText(
-                    title: 'PMS:', color: ColorConstants.DarkMahroon, fontSize: 14, fontWeight: FontWeight.w500),
+                    title: 'PMS:',
+                    color: ColorConstants.DarkMahroon,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500),
                 headingText(
-                    title: userMeetingDetailsList.first.pms.capitalizeFirst.toString(),
+                    title: userMeetingDetailsList.first.pms.capitalizeFirst
+                        .toString(),
                     color: ColorConstants.BLACKCOLOR,
                     fontSize: 14,
                     fontWeight: FontWeight.w500)
@@ -860,7 +970,6 @@ class _PersonDetailState extends State<PersonDetail> {
           ],
         ),
       );
-
 
   initiateMeetingDeTail() {
     //isLoading = true;
@@ -898,32 +1007,85 @@ class _PersonDetailState extends State<PersonDetail> {
     final googleUrl = 'https://www.google.com/maps/search/?api=1&query=$query';
 
     if (await canLaunchUrl(Uri.parse(googleUrl))) {
-      await launchUrl(Uri.parse(googleUrl), mode: LaunchMode.externalApplication);
+      await launchUrl(Uri.parse(googleUrl),
+          mode: LaunchMode.externalApplication);
     } else {
       throw 'Could not open the map.';
     }
   }
-  initiateMeetingApprovedRejected(String status) {
+
+  Future<void> _promptApproveWithRemark() async {
+    _authorityRemarkController.text = "";
+    final remark = await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text("Approval Remark"),
+          content: TextField(
+            controller: _authorityRemarkController,
+            maxLines: 3,
+            decoration: const InputDecoration(
+              hintText: "Enter approval remark",
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final value = _authorityRemarkController.text.trim();
+                if (value.isEmpty) {
+                  showErrorBottomSheet("Please enter approval remark.");
+                  return;
+                }
+                Navigator.pop(dialogContext, value);
+              },
+              child: const Text("Submit"),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (remark == null || remark.trim().isEmpty) {
+      return;
+    }
+
+    initiateMeetingApprovedRejected("approved", authorityRemark: remark.trim());
+    Navigator.pop(context);
+  }
+
+  initiateMeetingApprovedRejected(String status,
+      {String authorityRemark = ""}) {
+    final remark = authorityRemark.trim();
+    if (status == "approved" && remark.isEmpty) {
+      showErrorBottomSheet("Please enter approval remark.");
+      return;
+    }
     var hashMap = {
       "tbl_user_id": userMeetingDetailsList.first.tblUserId.toString(),
       "tbl_office_id": userMeetingDetailsList.first.tblOfficeId.toString(),
       "tbl_meeting_id": userMeetingDetailsList.first.tblMeetingId.toString(),
-      "approved_reject_by_user_id": viewLoginDetail!.data.first.tblUserId.toString(),
-      "approved_reject_by_user_type": viewLoginDetail!.data.first.designationType.toString(),
+      "approved_reject_by_user_id":
+          viewLoginDetail!.data.first.tblUserId.toString(),
+      "approved_reject_by_user_type":
+          viewLoginDetail!.data.first.designationType.toString(),
       "meeting_status": status,
+      "authority_remark": remark,
     };
     print('MEETING_APPROVED_REJECTED_API=>$hashMap');
     meetingApprovedRejectedApi(hashMap).then((onValue) {
       if (onValue.status) {
         showSuccessBottomSheet(onValue.message);
-       //Fluttertoast.showToast(msg: onValue.message,backgroundColor: ColorConstants.GREENCOLOR);
+        //Fluttertoast.showToast(msg: onValue.message,backgroundColor: ColorConstants.GREENCOLOR);
       } else {
         showErrorBottomSheet(onValue.message);
-     //Fluttertoast.showToast(msg: onValue.message,backgroundColor: ColorConstants.REDCOLOR);
+        //Fluttertoast.showToast(msg: onValue.message,backgroundColor: ColorConstants.REDCOLOR);
         print("EXCEPTION=>${onValue.message}");
       }
     });
   }
-
-
 }
