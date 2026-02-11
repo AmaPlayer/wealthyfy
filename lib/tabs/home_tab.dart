@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:meeting/controller/HomeTabController.dart';
-import 'package:meeting/helper/colors.dart';
-import 'package:meeting/screens/notification_sreen.dart';
+import 'package:wealthyfy/controller/HomeTabController.dart';
+import 'package:wealthyfy/helper/colors.dart';
+import 'package:wealthyfy/screens/notification_sreen.dart';
 import '../helper/ErrorBottomSheet.dart';
 import '../helper/imagees.dart';
 import '../helper/textview.dart';

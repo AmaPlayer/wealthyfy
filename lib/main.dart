@@ -7,7 +7,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart'; // Location package
 import 'package:workmanager/workmanager.dart'; // Add this import
-import 'package:meeting/background_task.dart'; // Add this import
+import 'package:wealthyfy/background_task.dart'; // Add this import
 import 'APIs/user_data.dart';
 import 'Routes/AppPages.dart';
 import 'Routes/AppRoutes.dart';
@@ -15,6 +15,7 @@ import 'helper/colors.dart';
 import 'helper/textview.dart';
 import 'screens/splash.dart';
 import 'firebase_options.dart';
+import 'dart:io';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -198,17 +199,30 @@ class WelcomeStateController extends GetxController {
   }
 
   Future<void> _requestPermission() async {
-    LocationPermission permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.whileInUse) {
-      // Try to upgrade to "always" for background tasks.
-      permission = await Geolocator.requestPermission();
-    }
-    if (permission == LocationPermission.denied) {
-      _showPermissionDeniedDialog();
-    } else if (permission == LocationPermission.deniedForever) {
-      _showSettingsDialog();
+    if (Platform.isIOS) {
+      // On iOS, only request permission once.
+      LocationPermission permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        _showPermissionDeniedDialog();
+      } else if (permission == LocationPermission.deniedForever) {
+        _showSettingsDialog();
+      } else {
+        _navigateToApp();
+      }
     } else {
-      _navigateToApp();
+      // On other platforms (e.g., Android), keep the original logic.
+      LocationPermission permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.whileInUse) {
+        // Try to upgrade to "always" for background tasks.
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.denied) {
+        _showPermissionDeniedDialog();
+      } else if (permission == LocationPermission.deniedForever) {
+        _showSettingsDialog();
+      } else {
+        _navigateToApp();
+      }
     }
   }
 

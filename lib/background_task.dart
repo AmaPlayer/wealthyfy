@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:meeting/APIs/Api.dart';
+import 'package:wealthyfy/APIs/Api.dart';
 
 // ✅ Cleaner + safer refactor
 @pragma('vm:entry-point')

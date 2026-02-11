@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meeting/helper/colors.dart';
+import 'package:wealthyfy/helper/colors.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;

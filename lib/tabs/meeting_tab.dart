@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:meeting/controller/HomeTabController.dart';
-import 'package:meeting/helper/ErrorBottomSheet.dart';
-import 'package:meeting/helper/colors.dart';
-import 'package:meeting/controller/button_controller/custombuttom.dart';
-import 'package:meeting/helper/textview.dart';
-import 'package:meeting/screens/notification_sreen.dart';
-import 'package:meeting/screens/meeting_minutes_screen.dart';
+import 'package:wealthyfy/controller/HomeTabController.dart';
+import 'package:wealthyfy/helper/ErrorBottomSheet.dart';
+import 'package:wealthyfy/helper/colors.dart';
+import 'package:wealthyfy/controller/button_controller/custombuttom.dart';
+import 'package:wealthyfy/helper/textview.dart';
+import 'package:wealthyfy/screens/notification_sreen.dart';
+import 'package:wealthyfy/screens/meeting_minutes_screen.dart';
 import 'package:intl/intl.dart';
 
 class MeetingTab extends GetView<HomeTabController> {

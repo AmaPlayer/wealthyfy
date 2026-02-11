@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:meeting/controller/HomeTabController.dart';
+import 'package:wealthyfy/controller/HomeTabController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs/Api.dart';
 import '../APIs/user_data.dart';

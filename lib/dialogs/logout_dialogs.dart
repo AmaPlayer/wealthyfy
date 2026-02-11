@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:meeting/helper/colors.dart';
-import 'package:meeting/screens/login_screen.dart';
+import 'package:wealthyfy/helper/colors.dart';
+import 'package:wealthyfy/screens/login_screen.dart';
 
 import '../APIs/user_data.dart';
 import '../helper/textview.dart';

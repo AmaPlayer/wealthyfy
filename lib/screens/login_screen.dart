@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:meeting/helper/ErrorBottomSheet.dart';
-import 'package:meeting/helper/imagees.dart';
-import 'package:meeting/helper/textview.dart';
+import 'package:wealthyfy/helper/ErrorBottomSheet.dart';
+import 'package:wealthyfy/helper/imagees.dart';
+import 'package:wealthyfy/helper/textview.dart';
 import '../APIs/Api.dart';
 import '../APIs/user_data.dart';
 import '../Models/login_model.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:meeting/APIs/Api.dart';
-import 'package:meeting/APIs/user_data.dart';
-import 'package:meeting/helper/colors.dart';
-import 'package:meeting/controller/button_controller/custombuttom.dart';
-import 'package:meeting/helper/textview.dart';
+import 'package:wealthyfy/APIs/Api.dart';
+import 'package:wealthyfy/APIs/user_data.dart';
+import 'package:wealthyfy/helper/colors.dart';
+import 'package:wealthyfy/controller/button_controller/custombuttom.dart';
+import 'package:wealthyfy/helper/textview.dart';
 
 import '../Models/userleave_apply_details.dart';
 

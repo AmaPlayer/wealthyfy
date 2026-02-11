@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:meeting/APIs/Api.dart';
-import 'package:meeting/APIs/user_data.dart';
-import 'package:meeting/controller/HomeTabController.dart';
-import 'package:meeting/controller/button_controller/custombuttom.dart';
-import 'package:meeting/controller/dashboardcontroller.dart';
-import 'package:meeting/helper/ErrorBottomSheet.dart';
-import 'package:meeting/helper/colors.dart';
-import 'package:meeting/helper/textview.dart';
-import 'package:meeting/Routes/bindings.dart';
-import 'package:meeting/screens/bottom_screen.dart';
+import 'package:wealthyfy/APIs/Api.dart';
+import 'package:wealthyfy/APIs/user_data.dart';
+import 'package:wealthyfy/controller/HomeTabController.dart';
+import 'package:wealthyfy/controller/button_controller/custombuttom.dart';
+import 'package:wealthyfy/controller/dashboardcontroller.dart';
+import 'package:wealthyfy/helper/ErrorBottomSheet.dart';
+import 'package:wealthyfy/helper/colors.dart';
+import 'package:wealthyfy/helper/textview.dart';
+import 'package:wealthyfy/Routes/bindings.dart';
+import 'package:wealthyfy/screens/bottom_screen.dart';
 
 class MeetingMinutesScreen extends StatefulWidget {
   final String tblMeetingId;

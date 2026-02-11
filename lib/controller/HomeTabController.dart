@@ -6,9 +6,10 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:meeting/APIs/Api.dart';
+import 'package:wealthyfy/APIs/Api.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:workmanager/workmanager.dart'; // Added for background tasks
+import 'dart:io';
 import '../../APIs/user_data.dart';
 import '../../Models/dashboard_approvedmeeting_model.dart';
 import '../../Models/usermeeting_List_model.dart';
@@ -263,32 +264,34 @@ class HomeTabController extends GetxController {
   Future<void> initiateCheckMeetingData(String tblMeetingId) async {
     meetingLoadingMap[tblMeetingId] = true;
     try {
-      final permission = await Geolocator.checkPermission();
-      if (permission != LocationPermission.always) {
-        meetingLoadingMap[tblMeetingId] = false;
-        Get.dialog(
-          AlertDialog(
-            title: const Text("Location Permission Required"),
-            content: const Text(
-              "Please set location permission to 'Always allow' to check in.",
+      if (!Platform.isIOS) {
+        final permission = await Geolocator.checkPermission();
+        if (permission != LocationPermission.always) {
+          meetingLoadingMap[tblMeetingId] = false;
+          Get.dialog(
+            AlertDialog(
+              title: const Text("Location Permission Required"),
+              content: const Text(
+                "Please set location permission to 'Always allow' to check in.",
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Get.back(),
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await Geolocator.openLocationSettings();
+                    Get.back();
+                  },
+                  child: const Text("Open Settings"),
+                ),
+              ],
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Get.back(),
-                child: const Text("Cancel"),
-              ),
-              TextButton(
-                onPressed: () async {
-                  await Geolocator.openLocationSettings();
-                  Get.back();
-                },
-                child: const Text("Open Settings"),
-              ),
-            ],
-          ),
-          barrierDismissible: false,
-        );
-        return;
+            barrierDismissible: false,
+          );
+          return;
+        }
       }
 
       Position position = await Geolocator.getCurrentPosition(
@@ -319,6 +322,7 @@ class HomeTabController extends GetxController {
         print("City: $userCity, Country: $country");
       }
 
+      final permission = await Geolocator.checkPermission();
       final permissionValue = permission == LocationPermission.always
           ? "always"
           : (permission == LocationPermission.denied || permission == LocationPermission.deniedForever)
@@ -365,11 +369,11 @@ class HomeTabController extends GetxController {
           print("permission_check_api failed: $error");
         }
 
-        // Schedule background tasks for fake check-ins
-        final userId = viewLoginDetail!.data.first.tblUserId.toString();
-        final officeId = viewLoginDetail!.data.first.tblOfficeId.toString();
+        if (!kIsWeb && !Platform.isIOS) {
+          // Schedule background tasks for fake check-ins
+          final userId = viewLoginDetail!.data.first.tblUserId.toString();
+          final officeId = viewLoginDetail!.data.first.tblOfficeId.toString();
 
-        if (!kIsWeb) {
           Workmanager().registerOneOffTask(
             "meetingFakeCheckTask_5min_$tblMeetingId",
             "meetingFakeCheck",
@@ -415,32 +419,34 @@ class HomeTabController extends GetxController {
   Future<void> initiateMeetingCheckOutData(String tblMeetingId) async {
     meetingCheckOutLoadingMap[tblMeetingId] = true;
     try {
-      final permission = await Geolocator.checkPermission();
-      if (permission != LocationPermission.always) {
-        meetingCheckOutLoadingMap[tblMeetingId] = false;
-        Get.dialog(
-          AlertDialog(
-            title: const Text("Location Permission Required"),
-            content: const Text(
-              "Please set location permission to 'Always allow' to check out.",
+      if (!Platform.isIOS) {
+        final permission = await Geolocator.checkPermission();
+        if (permission != LocationPermission.always) {
+          meetingCheckOutLoadingMap[tblMeetingId] = false;
+          Get.dialog(
+            AlertDialog(
+              title: const Text("Location Permission Required"),
+              content: const Text(
+                "Please set location permission to 'Always allow' to check out.",
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Get.back(),
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await Geolocator.openLocationSettings();
+                    Get.back();
+                  },
+                  child: const Text("Open Settings"),
+                ),
+              ],
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Get.back(),
-                child: const Text("Cancel"),
-              ),
-              TextButton(
-                onPressed: () async {
-                  await Geolocator.openLocationSettings();
-                  Get.back();
-                },
-                child: const Text("Open Settings"),
-              ),
-            ],
-          ),
-          barrierDismissible: false,
-        );
-        return;
+            barrierDismissible: false,
+          );
+          return;
+        }
       }
 
       Position position = await Geolocator.getCurrentPosition(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:meeting/helper/textview.dart';
+import 'package:wealthyfy/helper/textview.dart';
 
 showErrorBottomSheet(String title) {
   Get.bottomSheet(SafeArea(

@@ -2,9 +2,9 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:meeting/helper/colors.dart';
-import 'package:meeting/controller/button_controller/custombuttom.dart';
-import 'package:meeting/helper/textview.dart';
+import 'package:wealthyfy/helper/colors.dart';
+import 'package:wealthyfy/controller/button_controller/custombuttom.dart';
+import 'package:wealthyfy/helper/textview.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../APIs/Api.dart';

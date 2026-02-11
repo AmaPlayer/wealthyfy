@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:meeting/helper/colors.dart';
+import 'package:wealthyfy/helper/colors.dart';
 
 import '../helper/textview.dart';
 

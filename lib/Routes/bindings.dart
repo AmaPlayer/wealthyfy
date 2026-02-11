@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:meeting/controller/HomeTabController.dart';
-import 'package:meeting/main.dart';
+import 'package:wealthyfy/controller/HomeTabController.dart';
+import 'package:wealthyfy/main.dart';
 
 import '../controller/dashboardcontroller.dart';
 

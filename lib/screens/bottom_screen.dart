@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:meeting/controller/dashboardcontroller.dart';
-import 'package:meeting/helper/colors.dart';
-import 'package:meeting/tabs/home_tab.dart';
-import 'package:meeting/tabs/meeting_tab.dart';
-import 'package:meeting/tabs/profile_tab.dart';
+import 'package:wealthyfy/controller/dashboardcontroller.dart';
+import 'package:wealthyfy/helper/colors.dart';
+import 'package:wealthyfy/tabs/home_tab.dart';
+import 'package:wealthyfy/tabs/meeting_tab.dart';
+import 'package:wealthyfy/tabs/profile_tab.dart';
 class MyBottomBar extends GetView<DashboardController> {
   const MyBottomBar({super.key});
   @override

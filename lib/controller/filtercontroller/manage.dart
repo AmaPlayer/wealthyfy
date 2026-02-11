@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:meeting/helper/colors.dart';
-import 'package:meeting/helper/textview.dart';
+import 'package:wealthyfy/helper/colors.dart';
+import 'package:wealthyfy/helper/textview.dart';
 import '../../helper/imagees.dart';
 import '../../lists/filter_model.dart';
 import '../../screens/team_leave_details.dart';

@@ -5,11 +5,11 @@ import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:meeting/APIs/Api.dart';
-import 'package:meeting/controller/dashboardcontroller.dart';
-import 'package:meeting/helper/ErrorBottomSheet.dart';
-import 'package:meeting/helper/colors.dart';
-import 'package:meeting/helper/textview.dart';
+import 'package:wealthyfy/APIs/Api.dart';
+import 'package:wealthyfy/controller/dashboardcontroller.dart';
+import 'package:wealthyfy/helper/ErrorBottomSheet.dart';
+import 'package:wealthyfy/helper/colors.dart';
+import 'package:wealthyfy/helper/textview.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});

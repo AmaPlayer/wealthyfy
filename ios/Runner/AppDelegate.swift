@@ -1,6 +1,6 @@
 import Flutter
 import UIKit
-import Workmanager // Added for Workmanager
+// import Workmanager // Added for Workmanager
 import CoreLocation // Added for location services
 
 @main
@@ -12,7 +12,7 @@ import CoreLocation // Added for location services
     GeneratedPluginRegistrant.register(with: self)
 
     // Register Workmanager task
-    WorkmanagerPlugin.registerTask(withIdentifier: "meetingFakeCheck") // Make sure "meetingFakeCheck" matches the identifier used in registerOneOffTask
+    // WorkmanagerPlugin.registerTask(withIdentifier: "meetingFakeCheck") // Make sure "meetingFakeCheck" matches the identifier used in registerOneOffTask
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }

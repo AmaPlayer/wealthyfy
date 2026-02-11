@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:meeting/controller/button_controller/custombuttom.dart';
-import 'package:meeting/helper/textview.dart';
+import 'package:wealthyfy/controller/button_controller/custombuttom.dart';
+import 'package:wealthyfy/helper/textview.dart';
 
 class LatLong extends StatefulWidget {
   const LatLong({super.key});
